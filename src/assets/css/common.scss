@@ -1,0 +1,117 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+ul li {
+  list-style-type: none;
+}
+
+p, form, ol, ul, li, dl, dt, dd, h3 {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+h1, h2, h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+}
+
+html, body {
+  height: 100%;
+  font-family: "微软雅黑", "宋体";
+  background: #f6f7fb;
+  min-width: 1024px;
+}
+
+a, a:link, a:hover {
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+  color: inherit !important;
+}
+
+.btn:hover {
+  color: #fff !important;
+}
+.req {
+  color: #f0820c;
+  margin-right: 30px;
+}
+.red {
+  color: red;
+}
+.color_qf {
+  color: #4786ff;
+}
+.green {
+  color: #01c853;
+}
+.tgsh {
+  color: #828282;
+}
+.size_color {
+  color: #888888;
+}
+.tsy {
+  padding: 1px 6px;
+  border-radius: 180px;
+  background: #4786ff;
+  color: #fff;
+  font-size: 0.1em;
+  margin-left: 5px;
+}
+.btn_sure, .btn_waive {
+  padding: 6px 30px;
+  margin: 0 5px;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 12px;
+  min-width: 130px;
+}
+.btn_dc {
+  background: #DBE7FF;
+  padding: 3px 30px;
+  margin: 0 5px;
+  font-size: 12px;
+  border-radius: 20px;
+  color: #4344fe !important;
+}
+.btn_dc:hover {
+  color: #4344fe !important;
+}
+.btn_sure {
+  background: #4344fe;
+  color: #fff !important;
+}
+.glyphicon-chevron-down {
+  color: #fff;
+}
+.btn_waive {
+  background: #555555;
+}
+.btn_gg {
+  background: #dbe7ff;
+  color: #4344fe;
+  margin-left: 30px;
+  border-radius: 20px;
+  width: 130px;
+}
+.btn_gg:hover {
+  background: #c4d7ff;
+  color: #4344fe !important;
+}
+.btn_fz {
+  background: #01c853;
+  color: #fff;
+  width: 152px;
+  border-radius: 18px;
+}
+
+
