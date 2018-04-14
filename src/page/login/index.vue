@@ -62,7 +62,7 @@ export default {
       if (res.data.code === 0) {
         setCookie('username', this.username, 1000 * 60);
         setCookie('platform_user', res.data.data.token, 1000 * 60);
-        setTimeout(() => { this.$router.push('/agencymgt/list'); }, 1000);
+        this.$router.push('/agencymgt/list');
       } else {
         this.lo = '登录';
       }

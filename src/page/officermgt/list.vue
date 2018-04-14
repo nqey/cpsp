@@ -47,7 +47,7 @@
               <td><b>{{index + 1}}</b></td>
               <td>{{item.name}}</td>
               <td>{{item.cellphone}}</td>
-              <td>{{item.recommentName}}</td>
+              <td>{{item.organizName}}</td>
               <td>{{declareProduct[item.product]}}</td>
               <td>{{item.createTime}}</td>
               <td>{{item.state}}</td>

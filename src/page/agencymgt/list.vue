@@ -49,9 +49,9 @@
               <td>{{item.recommentName}}</td>
               <td>{{item.organizName}}</td>
               <td>{{item.createTime}}</td>
-              <td>{{item.state}}</td>
+              <td>{{item.stateNm}}</td>
               <td class="gc_list">
-                <router-link :to="'/agencymgt/detail/' + item.id">查看详情</router-link>
+                <router-link v-if="item.state !== 'baseWaitSubmit'" :to="'/agencymgt/detail/' + item.id">查看详情</router-link>
               </td>
             </tr>
           </tbody>
@@ -114,7 +114,8 @@ export default {
       if (res.data.code === 0) {
         this.lists = res.data.data;
         this.lists.forEach((o) => {
-          o.state = this.status[o.state];
+          o.state = o.state;
+          o.stateNm = this.status[o.state];
           o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd');
         });
       }

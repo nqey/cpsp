@@ -2,7 +2,8 @@
   <section class="index_content clearfix">
     <div class="col-md-10 col-md-offset-1">
       <div class="index_table_tit clearfix">
-        <div class="col-md-10 col-md-offset-1"><a class="btn back_icon" href="javascript:history.back(-1);"><img :src="backicon" />返回</a>
+        <div class="col-md-10 col-md-offset-1">
+          <router-link class="btn back_icon" to="/agencymgt/list"><img :src="backicon" />返回</router-link>
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">基本信息</a></li>
             <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">登记信息</a></li>
@@ -181,22 +182,22 @@ export default {
       reason: '',
       backicon,
       status: {
-        baseWaitSubmit: ['基本信息待填写', 'baseWait'],
+        baseWaitSubmit: ['基本信息待填写', 'pass'],
         baseWaitPending: ['基本信息待初审', 'baseWait'],
-        baseWaitUnPending: ['基本信息初审未通过', 'baseWait'],
-        baseWaitPended: ['基本信息初审通过', 'baseWait'],
+        baseWaitUnPending: ['基本信息初审未通过', 'pass'],
+        baseWaitPended: ['基本信息初审通过', 'pass'],
         baseWaitAudit: ['基本信息待审核', 'baseWait'],
-        baseUnPass: ['基本信息未通过', 'base'],
-        basePass: ['基本信息通过', 'base'],
-        registWaitSubmit: ['登记信息待填写', 'registWait'],
+        baseUnPass: ['基本信息未通过', 'pass'],
+        basePass: ['基本信息通过', 'pass'],
+        registWaitSubmit: ['登记信息待填写', 'pass'],
         registWaitPending: ['登记信息待初审', 'registWait'],
-        registWaitUnPending: ['登记信息初审未通过', 'registWait'],
-        registWaitPended: ['登记信息初审通过', 'registWait'],
+        registWaitUnPending: ['登记信息初审未通过', 'pass'],
+        registWaitPended: ['登记信息初审通过', 'pass'],
         registWaitAudit: ['登记信息待审核', 'registWait'],
-        registUnPass: ['登记信息未通过', 'regist'],
-        registPass: ['登记信息审核通过', 'regist'],
+        registUnPass: ['登记信息未通过', 'pass'],
+        registPass: ['登记信息审核通过', 'pass'],
         delete: ['已删除', 'pass'],
-        pass: ['通过审核', 'pass'],
+        passed: ['通过审核', 'pass'],
       },
       statusNm: '',
       serverurl: IMAGE_SERVER_URL,
@@ -266,7 +267,7 @@ export default {
       if (status !== 'pass') {
         const res = await this.$xhr('post', `${api}${this.$route.params.id}`, param);
         if (res.data.code === 0) {
-          setTimeout(() => { this.$router.push('/agencymgt/list'); }, 1000);
+          this.$router.push('/agencymgt/list');
         }
       }
     },

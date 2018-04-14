@@ -2,7 +2,9 @@
   <section class="index_content clearfix">
     <div class="col-md-10 col-md-offset-1">
       <div class="index_table_tit clearfix">
-        <div class="col-md-10 col-md-offset-1"><a href="#" class="">申报官管理></a><b>申报官详情</b> </div>
+        <div class="col-md-10 col-md-offset-1"> 
+          <router-link class="btn back_icon" to="/officermgt/list"><img :src="backicon" />返回</router-link>
+        </div>
       </div>
       <div class="index_table index_table_con clearfix">
         <div class="col-md-10 col-md-offset-1"> 
@@ -101,6 +103,7 @@
 </template>
 
 <script>
+import backicon from '@/assets/img/back_icon.png';
 import vimg from '@/components/img/img';
 import { formatDate } from '@/config/utils';
 import { PLATFORM_GET_DECLARER, PLATFORM_PUT_DECLARER_AUDIT, PLATFORM_PUT_DECLARER_WAITAUDIT, IMAGE_SERVER_URL } from '@/config/env';
@@ -109,6 +112,7 @@ export default {
   name: 'detail',
   data() {
     return {
+      backicon,
       isShowStatus: true,
       areaCode: '',
       cellphone: '',
@@ -129,12 +133,12 @@ export default {
       surveyImageUrl: '',
       reason: '',
       status: {
-        create: ['添加', 'base'],
+        create: ['添加', 'pass'],
         waitPending: ['待初审', 'base'],
-        waitUnPending: ['初审未通过', 'base'],
-        waitPended: ['初审通过', 'base'],
+        waitUnPending: ['初审未通过', 'pass'],
+        waitPended: ['初审通过', 'pass'],
         waitAudit: ['待审核', 'baseWait'],
-        unpass: ['未通过', 'baseWait'],
+        unpass: ['未通过', 'pass'],
         passed: ['已通过', 'pass'],
         delete: ['删除中', 'pass'],
         deleted: ['已删除', 'pass'],
@@ -189,7 +193,7 @@ export default {
       if (status !== 'pass') {
         const res = await this.$xhr('post', `${api}${this.$route.params.id}`, param);
         if (res.data.code === 0) {
-          setTimeout(() => { this.$router.push('/officermgt/list'); }, 1000);
+          this.$router.push('/officermgt/list');
         }
       }
     },

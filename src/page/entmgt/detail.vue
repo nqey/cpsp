@@ -2,14 +2,14 @@
   <section class="index_content clearfix">
     <div class="col-md-10 col-md-offset-1">
       <div class="index_table_tit clearfix">
-        <div class="col-md-10 col-md-offset-1"><a href="#" class="">申报企业管理></a><b>申报企业详情</b></div>
+        <router-link class="btn back_icon" to="/entmgt/list"><img :src="backicon" />返回</router-link>
       </div>
       <div class="index_table index_table_con clearfix">
         <div class="col-md-10 col-md-offset-1">
           <div class="form-group clearfix">
             <div class="content_left"><b>企业名称</b></div>
             <div class="content_right clearfix">
-              <p>{{name}}<span class="pull-right red"><b>未审核</b></span></p>
+              <p>{{name}}<span class="pull-right red"><b>{{statusNm}}</b></span></p>
             </div>
           </div>
           <div class="form-group clearfix">
@@ -132,6 +132,7 @@
 </template>
 
 <script>
+import backicon from '@/assets/img/back_icon.png';
 import vimg from '@/components/img/img';
 import { formatDate } from '@/config/utils';
 import { PLATFORM_GET_DECLARER_ENTERPRISE_ID, PLATFORM_PUT_DECLARER_ENTERPRISE_AUDIT, PLATFORM_PUT_DECLARER_ENTERPRISE_WAITAUDIT, IMAGE_SERVER_URL } from '@/config/env';
@@ -140,6 +141,7 @@ export default {
   name: 'detail',
   data() {
     return {
+      backicon,
       isShowStatus: true,
       authorizationImageUrl: '',
       capitalImageUrl: '',
@@ -163,19 +165,19 @@ export default {
       state: '',
       reason: '',
       status: {
-        waitPending: ['待初审', 'base'],
-        waitUnPending: ['初审未通过', 'base'],
-        waitPended: ['初审通过', 'base'],
+        waitPending: ['申报企业待初审', 'base'],
+        waitUnPending: ['初审未通过', 'pass'],
+        waitPended: ['初审通过', 'pass'],
         waitAudit: ['待审核', 'base'],
-        unPass: ['未通过', 'base'],
-        pass: ['已通过', 'base'],
-        wait: ['待支付', 'base'],
-        pending: ['待初审', 'base'],
-        collectting: ['待认证官上门采集', 'base'],
-        confirmFailed: ['初审未通过', 'base'],
-        reject2: ['认证官采集未通过', 'base'],
-        pending2: ['待复审', 'baseWait'],
-        confirm2Failed: ['复审未通过', 'baseWait'],
+        unPass: ['未通过', 'pass'],
+        pass: ['已通过', 'pass'],
+        wait: ['待支付', 'pass'],
+        pending: ['企业入库待初审', 'pass'],
+        collectting: ['待认证官上门采集', 'pass'],
+        confirmFailed: ['初审未通过', 'pass'],
+        reject2: ['认证官采集未通过', 'pass'],
+        pending2: ['待复审', 'pass'],
+        confirm2Failed: ['复审未通过', 'pass'],
         passed: ['通过审核', 'pass'],
       },
       statusNm: '',
@@ -245,7 +247,7 @@ export default {
       if (status !== 'pass') {
         const res = await this.$xhr('post', `${api}${this.$route.params.id}`, param);
         if (res.data.code === 0) {
-          setTimeout(() => { this.$router.push('/entmgt/list'); }, 1000);
+          this.$router.push('/entmgt/list');
         }
       }
     },

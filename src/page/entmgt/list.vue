@@ -46,8 +46,8 @@
               <td>{{item.name}}</td>
               <td>{{item.organizName}}</td>
               <td>{{item.charger}}</td>
-              <td>{{item.createTime}}</td>
               <td>{{item.state}}</td>
+              <td>{{item.createTime}}</td>
               <td class="gc_list">
                 <router-link :to="'/entmgt/detail/' + item.id">查看详情</router-link>
               </td>
@@ -79,14 +79,14 @@ export default {
       endtime: '',
       state: '',
       status: {
-        waitPending: '待初审',
+        waitPending: '申报企业待初审',
         waitUnPending: '初审未通过',
         waitPended: '初审通过',
         waitAudit: '待审核',
         unPass: '未通过',
         pass: '已通过',
         wait: '待支付',
-        pending: '待初审',
+        pending: '企业入库待初审',
         collectting: '待认证官上门采集',
         confirmFailed: '初审未通过',
         reject2: '认证官采集未通过',
