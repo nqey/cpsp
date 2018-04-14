@@ -117,7 +117,8 @@
           <div class="form-group clearfix">
             <div class="content_left"><b>审核操作</b></div>
             <div class="content_right">
-              <button class="btn btn_sure" data-event="pass" @click="submit(true)">通过</button>
+              <button v-show="isShowSubmit" class="btn btn_sure" data-event="pass" @click="submit(true)">通过</button>
+              <button v-show="!isShowSubmit" class="btn btn_sure" data-event="pass" disabled>通过</button>
               <button class="btn btn_waive" data-event="reject" data-toggle="modal" data-target="#myModal">不通过</button>
             </div>
           </div>
@@ -135,8 +136,10 @@
             <textarea title="" class="inputtext btg" placeholder="请输入不通过原因" v-model="reason"></textarea>
           </div>
           <div class="text-center btgyy">
-            <button class="btn btn_sure" data-event="pass" data-toggle="modal" data-target="#myModal" @click="submit(true)">通过</button>
-            <button class="btn btn_waive" data-event="reject" data-toggle="modal" data-target="#myModal" @click="submit(false)">不通过</button>
+            <button class="btn btn_sure" v-show="isShowSubmit" data-event="pass" data-toggle="modal" data-target="#myModal" @click="submit(true)">通过</button>
+            <button class="btn btn_sure" v-show="!isShowSubmit" data-event="pass" data-toggle="modal" data-target="#myModal"  disabled>通过</button>
+            <button class="btn btn_waive" v-show="isShowSubmit" data-event="reject" data-toggle="modal" data-target="#myModal" @click="submit(false)">不通过</button>
+            <button class="btn btn_waive" v-show="!isShowSubmit" data-event="reject" data-toggle="modal" data-target="#myModal" disabled>不通过</button>
           </div>
         </div>
       </div>
@@ -155,6 +158,7 @@ export default {
   name: 'detail',
   data() {
     return {
+      isShowSubmit: true,
       isShowStatus: true,
       address: '',
       baseTime: 0,
@@ -264,10 +268,13 @@ export default {
         // 登记信息复审
         api = PLATFORM_PUT_ORGANIZ_REGISTAUDIT;
       }
+      this.isShowSubmit = !this.isShowSubmit;
       if (status !== 'pass') {
         const res = await this.$xhr('post', `${api}${this.$route.params.id}`, param);
         if (res.data.code === 0) {
           this.$router.push('/agencymgt/list');
+        } else {
+          this.isShowSubmit = !this.isShowSubmit;
         }
       }
     },
