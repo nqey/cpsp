@@ -136,10 +136,9 @@
             <textarea title="" class="inputtext btg" placeholder="请输入不通过原因" v-model="reason"></textarea>
           </div>
           <div class="text-center btgyy">
-            <button class="btn btn_sure" v-show="isShowSubmit" data-event="pass" data-toggle="modal" data-target="#myModal" @click="submit(true)">通过</button>
-            <button class="btn btn_sure" v-show="!isShowSubmit" data-event="pass" data-toggle="modal" data-target="#myModal"  disabled>通过</button>
-            <button class="btn btn_waive" v-show="isShowSubmit" data-event="reject" data-toggle="modal" data-target="#myModal" @click="submit(false)">不通过</button>
-            <button class="btn btn_waive" v-show="!isShowSubmit" data-event="reject" data-toggle="modal" data-target="#myModal" disabled>不通过</button>
+            <button class="btn btn_sure" v-show="isShowSubmit" data-event="pass" data-toggle="modal" data-target="#myModal" @click="submit(false)">确认</button>
+            <button class="btn btn_sure" v-show="!isShowSubmit" data-event="pass" data-toggle="modal" data-target="#myModal"  disabled>确认</button>
+            <button class="btn btn_waive" data-event="reject" data-toggle="modal" data-target="#myModal">取消</button>
           </div>
         </div>
       </div>

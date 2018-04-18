@@ -1,221 +1,155 @@
 <template>
-  <section class="index_content clearfix">
-    <div class="col-md-10 col-md-offset-1">
-      <div class="index_table_tit clearfix">
-        <div class="col-md-10 col-md-offset-1"> 
-          <router-link class="btn back_icon" to="/officermgt/list"><img :src="backicon" />返回</router-link>
-        </div>
+<section class="index_content clearfix">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="index_table_tit clearfix">
+      <div class="col-md-10 col-md-offset-1">
+       <router-link to="/exam/list" class="btn back_icon"><img :src="backicon">返回</router-link>
       </div>
-      <div class="index_table index_table_con clearfix">
-        <div class="col-md-10 col-md-offset-1"> 
-          <div class="form-group clearfix">
-            <div class="content_left"><b>寸照</b></div>
-            <div class="content_right clearfix">
-              <div class="pull-left" v-if="portrait">
-                <v-img :imgSrc="portrait"></v-img>
-              </div>
-              <span class="pull-right red"><b>{{statusNm}}</b></span>
-            </div>
-          </div>
-          <div class="form-group clearfix">
-            <div class="content_left"><b>姓名</b></div>
-            <div class="content_right clearfix">
-              <p>{{name}}</p>
-            </div>
-          </div>
-          <div class="form-group clearfix">
-            <div class="content_left"><b>手机号码</b></div>
-            <div class="content_right clearfix">
-              <p>{{cellphone}}</p>
-            </div>
-          </div>
-          <div class="form-group clearfix">
-            <div class="content_left"><b>身份证号</b></div>
-            <div class="content_right clearfix">
-              <p>{{idNumber}}</p>
-            </div>
-          </div>
-          <div class="form-group clearfix">
-            <div class="content_left"><b>考试分数</b></div>
-            <div class="content_right clearfix">
-              <p>{{score === -1 ? '未考试' : score }}</p>
-            </div>
-          </div>
-          <div class="form-group clearfix">
-            <div class="content_left"><b>证件照片</b></div>
-            <div class="content_right">
-              <div class="pull-left" v-if="idFrontUrl">
-                <v-img :imgSrc="idFrontUrl"></v-img>
-              </div>
-              <div class="pull-left" v-if="idBackUrl">
-                <v-img :imgSrc="idBackUrl"></v-img>
-              </div>
-            </div>
-          </div>
-          <div class="form-group clearfix">
-            <div class="content_left"><b>尽职调查表</b></div>
-            <div class="content_right">
-              <div class="pull-left" v-for="url of surveyImageUrl">
-                <v-img :imgSrc="url"></v-img>
-              </div>
-            </div>
-          </div>
-          <div class="form-group clearfix">
-            <div class="content_left"><b>承诺公函</b></div>
-            <div class="content_right">
-              <div class="content_right clearfix" v-if="letterImageUrl">
-                <v-img :imgSrc="letterImageUrl"></v-img>
-              </div>
-            </div>
+    </div>
+    <div class="index_table index_table_con clearfix">
+      <div class="col-md-6 col-md-offset-3 clearfix ht_cjks">
+        <div class="form-group clearfix">
+          <div class="content_left"><b>考试名称</b></div>
+          <div class="content_right clearfix">
+            <input type="text" class="form-control" />
           </div>
         </div>
-      </div>
-      <div class="index_sh clearfix" v-if="isShowStatus">
-        <div class="col-md-10 col-md-offset-1">
-          <div class="form-group clearfix">
-            <div class="content_left"><b>审核操作</b></div>
-            <div class="content_right">
-              <button v-show="isShowSubmit" class="btn btn_sure" data-event="pass" @click="submit(true)">通过</button>
-              <button v-show="!isShowSubmit" class="btn btn_sure" data-event="pass" disabled>通过</button>
-              <button class="btn btn_waive" data-event="reject" data-toggle="modal" data-target="#myModal">不通过</button>
-            </div>
+        <div class="form-group clearfix">
+          <div class="content_left"><b>说明</b></div>
+          <div class="content_right clearfix">
+            <textarea type="text" rows="5" class="form-control" />
           </div>
+        </div>
+        <div class="form-group clearfix">
+          <div class="content_left"><b>开始时间</b></div>
+          <div class="content_right clearfix">
+            <el-date-picker
+		      v-model="startDate"
+		      type="date"
+		      placeholder="选择日期">
+		    </el-date-picker>
+          </div>
+        </div>
+        <div class="text-center">
+          <button class="btn btn_sure wz_btn">立即创建</button>
         </div>
       </div>
     </div>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel"><b>不通过原因</b></h4>
-          </div>
-          <div class="modal-body">
-            <textarea title="" class="inputtext btg" placeholder="请输入不通过原因" v-model="reason"></textarea>
-          </div>
-          <div class="text-center btgyy">
-            <button class="btn btn_sure" v-show="isShowSubmit" data-event="pass" data-toggle="modal" data-target="#myModal" @click="submit(false)">确认</button>
-            <button class="btn btn_sure" v-show="!isShowSubmit" data-event="pass" data-toggle="modal" data-target="#myModal"  disabled>确认</button>
-            <button class="btn btn_waive" data-event="reject" data-toggle="modal" data-target="#myModal">取消</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  </div>
+</section>
 </template>
 
 <script>
 import backicon from '@/assets/img/back_icon.png';
-import vimg from '@/components/img/img';
-import { formatDate } from '@/config/utils';
-import { PLATFORM_GET_DECLARER, PLATFORM_PUT_DECLARER_AUDIT, PLATFORM_PUT_DECLARER_WAITAUDIT, IMAGE_SERVER_URL } from '@/config/env';
+// import { PLATFORM_POST_EXAMS_CREATION } from '@/config/env';
+import { DatePicker } from 'element-ui';
 
 export default {
-  name: 'detail',
   data() {
     return {
-      isShowSubmit: true,
       backicon,
-      isShowStatus: true,
-      areaCode: '',
-      cellphone: '',
-      codeState: '',
-      createTime: '',
-      fkOrganizId: '',
-      id: '',
-      idBackUrl: '',
-      idFrontUrl: '',
-      idNumber: '',
-      letterImageUrl: '',
-      modifyTime: '',
-      name: '',
-      portrait: '',
-      registerTime: '',
-      score: '',
-      state: '',
-      surveyImageUrl: '',
-      reason: '',
-      status: {
-        create: ['添加', 'pass'],
-        waitPending: ['待初审', 'base'],
-        waitUnPending: ['初审未通过', 'pass'],
-        waitPended: ['初审通过', 'pass'],
-        waitAudit: ['待审核', 'baseWait'],
-        unpass: ['未通过', 'pass'],
-        passed: ['已通过', 'pass'],
-        delete: ['删除中', 'pass'],
-        deleted: ['已删除', 'pass'],
-      },
-      statusNm: '',
-      serverurl: IMAGE_SERVER_URL,
+      startDate: '',
     };
   },
   methods: {
-    async init() {
-      const res = await this.$xhr('get', `${PLATFORM_GET_DECLARER}${this.$route.params.id}`);
-      if (res.data.success) {
-        this.areaCode = res.data.data.areaCode;
-        this.cellphone = res.data.data.cellphone;
-        this.codeState = res.data.data.codeState;
-        this.fkOrganizId = res.data.data.fkOrganizId;
-        this.id = res.data.data.id;
-        this.idNumber = res.data.data.idNumber;
-        this.modifyTime = res.data.data.modifyTime;
-        this.name = res.data.data.name;
-        this.score = res.data.data.score;
-        this.portrait = res.data.data.portrait;
-        this.idBackUrl = res.data.data.idBackUrl;
-        this.idFrontUrl = res.data.data.idFrontUrl;
-        this.surveyImageUrl = res.data.data.surveyImageUrl;
-        this.letterImageUrl = res.data.data.letterImageUrl;
-        if (res.data.data.surveyImageUrl) {
-          this.surveyImageUrl = res.data.data.surveyImageUrl.split(',');
-        }
-        this.createTime = formatDate(new Date(res.data.data.createTime), 'yyyy-MM-dd');
-        this.registerTime = formatDate(new Date(res.data.data.registerTime), 'yyyy-MM-dd');
-        this.state = res.data.data.state;
-        this.statusNm = this.status[this.state][0];
-        if (this.status[this.state][1] === 'pass') {
-          this.isShowStatus = false;
-        }
-      }
-    },
-    async submit(state) {
-      const param = {};
-      param.state = state;
-      param.reason = this.reason;
-      let api;
-      const status = this.status[this.state][1];
-      if (status === 'base') {
-        // 信息初审
-        api = PLATFORM_PUT_DECLARER_WAITAUDIT;
-      } else if (status === 'baseWait') {
-        // 信息复审
-        api = PLATFORM_PUT_DECLARER_AUDIT;
-      }
-      if (status !== 'pass') {
-        this.isShowSubmit = !this.isShowSubmit;
-        const res = await this.$xhr('post', `${api}${this.$route.params.id}`, param);
-        if (res.data.code === 0) {
-          this.$router.push('/officermgt/list');
-        } else {
-          this.isShowSubmit = !this.isShowSubmit;
-        }
-      }
+    async submit() {
+      // const res = await this.$xhr('get', `${PLATFORM_POST_EXAMS_CREATION}`);
+      // if (res.data.code === 0) {
+      // }
     },
   },
   components: {
-    'v-img': vimg,
+    'el-date-picker': DatePicker,
   },
   mounted() {
-    this.init();
   },
 };
+
 </script>
 
 <style lang="scss" scoped>
 @import '../../assets/css/mixin.scss';
 
+.btn:hover {
+  color: #fff !important;
+}
+.req {
+  color: #f0820c;
+  margin-right: 30px;
+}
+.red {
+  color: red;
+}
+.color_qf {
+  color: #4786ff !important;
+}
+.green {
+  color: #01c853 !important;
+}
+.tgsh {
+  color: #828282;
+}
+.size_color {
+  color: #888888;
+}
+.tsy {
+  padding: 1px 6px;
+  border-radius: 180px;
+  background: #4786ff;
+  color: #fff;
+  font-size: 0.1em;
+  margin-left: 5px;
+}
+.btn_sure, .btn_waive {
+  padding: 6px 30px;
+  margin: 0 5px;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 12px;
+  min-width: 130px;
+}
+.btn_dc {
+  background: #DBE7FF;
+  padding: 3px 30px;
+  margin: 0 5px;
+  font-size: 12px;
+  border-radius: 20px;
+  color: #4344fe !important;
+}
+.btn_dc:hover {
+  color: #4344fe !important;
+}
+.btn_sure {
+  background: #4344fe;
+  color: #fff !important;
+}
+.glyphicon-chevron-down {
+  color: #fff;
+}
+.btn_waive {
+  background: #555555;
+}
+.btn_gg {
+  background: #dbe7ff;
+  color: #4344fe;
+  margin-left: 30px;
+  border-radius: 20px;
+  width: 130px;
+}
+.btn_gg:hover {
+  background: #c4d7ff;
+  color: #4344fe !important;
+}
+.btn_fz {
+  background: #01c853;
+  color: #fff;
+  width: 152px;
+  border-radius: 18px;
+}
+.index_header {
+  height: 100px;
+  background-size: cover;
+}
 .index_logo {
   line-height: 100px;
   color: #fff;
@@ -355,8 +289,9 @@ table {
   border-radius: 20px;
   letter-spacing: 5px;
   float: left;
-  margin-top: 5px;
+  margin-left: 15px;
 }
+.back_icon:hover{ color:#ababab !important;}
 .back_icon img {
   padding-right: 10px;
 }
@@ -513,6 +448,29 @@ table {
   bottom: 0;
   margin-bottom: 0;
   margin-left: -50px;
+  color: #fff !important;
+}
+.scsz .form-group label {
+  margin-right: 30px;
+}
+.scsz .form-group input {
+  width: 180px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  margin-bottom: 20px;
+}
+.scsz .mrts {
+  margin-left: 90px;
+  color: #a7a7a7;
+}
+.scsz button {
+  display: block;
+  width: 280px;
+  margin: 20px auto;
+}
+.inputtext_ck {
+  background: #f6f6f6 !important;
 }
 .table_cont_bottom span {
   background: #f0f5f8;
@@ -665,18 +623,26 @@ table {
 .txxz {
   margin-bottom: 15px;
 }
+.txxz select{  border:1px solid #ddd; padding:0 5px; border-radius:4px;}
+.dajx{ line-height:30px;}
+.dajx a{ color:#01c853 !important; border-bottom:1px solid #01c853; padding-bottom:2px;}
 .bjst {
   border: 1px solid #ddd;
 }
 .bjst .inputtext {
   background: #fff;
 }
+label{ margin-bottom:18px !important;}
 .txsz {
   margin-top: 40px;
 }
 .stnr {
   padding: 15px;
 }
+.stnr input,.stnr select{
+  border:1px solid #ddd; border-radius:4px;padding:3px;
+}
+.stnr select{ margin-left:10px;}
 .wcbj {
   background: #01c853;
   width: 100%;
@@ -685,5 +651,17 @@ table {
 }
 .btgyy {
   padding: 15px 0 25px 0;
+}
+.yz_correct {
+  width: 360px;
+  margin: auto;
+}
+.yz_correct button {
+  background: #01c853;
+  width: 240px;
+  margin: auto;
+  color: #fff;
+  letter-spacing: 5px;
+  border-radius: 18px;
 }
 </style>

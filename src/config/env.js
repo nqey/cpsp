@@ -31,6 +31,16 @@ const BASE_URL = (() => {
         : `//${location.hostname}:8080/enterprise/`;
   }
 })();
+const EXAM_BASE_URL = (() => {
+  switch (test) {
+    case 'test':
+      return '//exam.cpsdb77.com/';
+    case 'online':
+      return '//exam.cpsdb77.com/';
+    default :
+      return '//exam.cpsdb77.com/';
+  }
+})();
 const DECLARE_BASE_URL = (() => {
   switch (test) {
     case 'test':
@@ -79,7 +89,7 @@ const ENTERPRISE_TYPE = {
 // 获取图片验证码
 const CHECKNUMBER = `${BASE_URL}publics/checknumber.jpg?t=`;
 // 申报机构登录接口地址
-const DECLARE_LOGIN_DO_ADDRESS = `${BASE_URL}publics/plat/login`;
+const DECLARE_LOGIN_DO_ADDRESS = `${BASE_URL}publics/user/login`;
 // 绑定申报机构接口地址
 const ENTERPRISE_BIND_DECLAREORG_ADDRESS = `${ENTERPRISE_BASE_URL}sbxt/declare/enterprise`;
 // 查询申报机构接口地址
@@ -166,7 +176,7 @@ const PLATFORM_GET_ORGANIZ_QUERY = `${DECLARE_BASE_URL}platform/organiz/query`;
 // 申报机构分页总条数
 const PLATFORM_GET_ORGANIZ_COUNT = `${DECLARE_BASE_URL}platform/organiz/count`;
 // 申报机构删除 + {id}
-const PLATFORM_DELETE_ORGANIZ = `${DECLARE_BASE_URL}platform/organiz/`;
+const PLATFORM_DELETE_ORGANIZ = `${DECLARE_BASE_URL}platform/organiz/delete/`;
 // 申报机构详情 + {id}
 const PLATFORM_GET_ORGANIZ = `${DECLARE_BASE_URL}platform/organiz/`;
 // 申报机构基本信息初审
@@ -182,7 +192,7 @@ const PLATFORM_GET_DECLARER_QUERY = `${DECLARE_BASE_URL}platform/declarer/query`
 // 申报官列表总数
 const PLATFORM_GET_DECLARER_COUNT = `${DECLARE_BASE_URL}platform/declarer/count`;
 // 申报官删除 + {id}
-const PLATFORM_DELETE_DECLARER = `${DECLARE_BASE_URL}platform/declarer/`;
+const PLATFORM_DELETE_DECLARER = `${DECLARE_BASE_URL}platform/declarer/delete/`;
 // 申报官详情 + {id}
 const PLATFORM_GET_DECLARER = `${DECLARE_BASE_URL}platform/declarer/`;
 // 申报官审核 + {id}
@@ -204,11 +214,17 @@ const PLATFORM_PUT_DECLARER_ENTERPRISE_AUDIT = `${DECLARE_BASE_URL}platform/decl
 // 申报企业审核
 const PLATFORM_PUT_DECLARER_ENTERPRISE_WAITAUDIT = `${DECLARE_BASE_URL}platform/declare/enterprise/waitAudit/`;
 
-// ================================考试系统外部接口===================================================
+// ================================考试系统接口===================================================
 // 根据考生的name、certificate和phone返回具体的考生对象，如果无则返回null;
 const PLATFORM_GET_DECLARER_EXAMINATION = `${DECLARE_BASE_URL}publics/declarer/examination`;
 // 根据考生的id更新考生的总分数;
 const PLATFORM_POST_DECLARER_SCORE = `${DECLARE_BASE_URL}platform/declarer/score`;
+// 动态条件查询下的考试对象总数
+const PLATFORM_GET_EXAMS_COUNTS = `${EXAM_BASE_URL}/platform/declareexamination/exams/counts`;
+// 动态条件查询下的考试对象的分页显示列表
+const PLATFORM_GET_EXAMS_LISTING = `${EXAM_BASE_URL}/platform/declareexamination/exams/listing`;
+// 考试的创建添加
+const PLATFORM_POST_EXAMS_CREATION = `${EXAM_BASE_URL}/platform/declareexamination/creation`;
 // ================================公告===================================================
 // 最新显示在页面上的信息
 const PUBLICS_GET_NOTICES_NEWEST = `${DECLARE_BASE_URL}/publics/notices/newest`;
@@ -295,4 +311,8 @@ export {
   PLATFORM_POST_ORGANIZ_REGISTWAITAUDIT,
   PLATFORM_PUT_DECLARER_WAITAUDIT,
   PLATFORM_PUT_DECLARER_ENTERPRISE_WAITAUDIT,
+  EXAM_BASE_URL,
+  PLATFORM_GET_EXAMS_LISTING,
+  PLATFORM_GET_EXAMS_COUNTS,
+  PLATFORM_POST_EXAMS_CREATION,
 };

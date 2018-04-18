@@ -8,6 +8,10 @@ const entmgtlist = r => require.ensure([], (require) => { r(require('@/page/entm
 const entmgtdetail = r => require.ensure([], (require) => { r(require('@/page/entmgt/detail')); }, 'entmgtdetail');
 const officermgtlist = r => require.ensure([], (require) => { r(require('@/page/officermgt/list')); }, 'officermgtlist');
 const officermgtdetail = r => require.ensure([], (require) => { r(require('@/page/officermgt/detail')); }, 'officermgtdetail');
+const examEdit = r => require.ensure([], (require) => { r(require('@/page/exam/edit')); }, 'examEdit');
+const examView = r => require.ensure([], (require) => { r(require('@/page/exam/view')); }, 'examView');
+const examList = r => require.ensure([], (require) => { r(require('@/page/exam/list')); }, 'examList');
+const examNew = r => require.ensure([], (require) => { r(require('@/page/exam/new')); }, 'examNew');
 
 Vue.use(Router);
 
@@ -42,6 +46,26 @@ export default new Router({
       path: '/officermgt/detail/:id',
       name: 'officermgtdetail',
       component: officermgtdetail,
+    },
+    {
+      path: '/exam/edit',
+      name: 'examEdit',
+      component: examEdit,
+    },
+    {
+      path: '/exam/view',
+      name: 'examView',
+      component: examView,
+    },
+    {
+      path: '/exam/list',
+      name: 'examList',
+      component: examList,
+    },
+    {
+      path: '/exam/new',
+      name: 'examNew',
+      component: examNew,
     },
     {
       path: '/login',

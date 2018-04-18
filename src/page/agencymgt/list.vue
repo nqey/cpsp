@@ -6,57 +6,72 @@
           <form class="form-inline">
             <div class="form-group">
               <label for="">姓名</label>           
-              <input type="text" v-model="name">
+              <div style="width: 180px;display: inline-block;"><el-input v-model="name" placeholder="请输入姓名"></el-input></div>
             </div>
             <div class="form-group">
               <label for="">手机号码</label>
-              <input type="text" v-model="cellphone">
+              <div style="width: 180px;display: inline-block;"><el-input v-model="cellphone" placeholder="请输入手机号码"></el-input></div>
             </div>
             <div class="form-group">
               <label for="">时间</label>
-              <input name="" type="text" placeholder="起始时间" v-model="startTime"/>
+              <el-date-picker
+                v-model="startTime"
+                type="date"
+                placeholder="起始时间">
+              </el-date-picker>
               <span class="text-center">至</span>
-              <input name="" type="text" placeholder="结束时间" v-model="endtime"/>
+              <el-date-picker
+                v-model="endtime"
+                type="date"
+                placeholder="结束时间">
+              </el-date-picker>
             </div>
             <div class="form-group">
               <label for="">状态</label>
-              <select v-model="state">
-                <option value="">请选择</option>
-                <option v-for="(k, v) of status" :value="v">{{k}}</option>
-              </select>
+              <el-select v-model="state" placeholder="请选择">
+                <el-option
+                  v-for="(k, v) of status"
+                  :key="v"
+                  :label="k"
+                  :value="v">
+                </el-option>
+              </el-select>
             </div>
-            <button class="btn btn_search" @click="search(1, 2)">搜索</button>
+            <el-button type="primary" @click="search(1, 2)">搜索</el-button>
           </form>
         </div>
-        <table class="table table-hover">
-          <thead>
-            <tr class="table_tit">
-              <th>序号</th>
-              <th>姓名</th>
-              <th>手机号码</th>
-              <th>推荐机构</th>
-              <th>企业名称</th>
-              <th>提交时间</th>
-              <th>审核状态</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) of lists">
-              <td><b>{{index + 1}}</b></td>
-              <td>{{item.name}}</td>
-              <td>{{item.cellphone}}</td>
-              <td>{{item.recommentName}}</td>
-              <td>{{item.organizName}}</td>
-              <td>{{item.createTime}}</td>
-              <td>{{item.stateNm}}</td>
-              <td class="gc_list">
-                <router-link v-if="item.state !== 'baseWaitSubmit'" :to="'/agencymgt/detail/' + item.id">查看详情</router-link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <v-pagination :page="pages" @nextPage="search"></v-pagination>
+        <div v-show="lists.length > 0">
+          <table class="table table-hover">
+            <thead>
+              <tr class="table_tit">
+                <th>序号</th>
+                <th>姓名</th>
+                <th>手机号码</th>
+                <th>推荐机构</th>
+                <th>企业名称</th>
+                <th>提交时间</th>
+                <th>审核状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) of lists">
+                <td><b>{{index + 1}}</b></td>
+                <td>{{item.name}}</td>
+                <td>{{item.cellphone}}</td>
+                <td>{{item.recommentName}}</td>
+                <td>{{item.organizName}}</td>
+                <td>{{item.createTime}}</td>
+                <td>{{item.stateNm}}</td>
+                <td class="gc_list">
+                  <router-link v-if="item.state !== 'baseWaitSubmit'" :to="'/agencymgt/detail/' + item.id">查看详情</router-link>
+                  <a v-if="item.state === '已删除'" @click="deleteAgency(item.id)">删除</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <v-pagination :page="pages" @nextPage="search"></v-pagination>
+        </div>
       </div>
     </div>
   </section>
@@ -64,8 +79,9 @@
 
 <script>
 import pagination from '@/components/pagination';
-import { PLATFORM_GET_ORGANIZ_QUERY, PLATFORM_GET_ORGANIZ_COUNT } from '@/config/env';
+import { PLATFORM_GET_ORGANIZ_QUERY, PLATFORM_GET_ORGANIZ_COUNT, PLATFORM_DELETE_ORGANIZ } from '@/config/env';
 import { formatDate } from '@/config/utils';
+import { DatePicker, Input, Select, Option, Button } from 'element-ui';
 
 export default {
   name: 'list',
@@ -101,12 +117,24 @@ export default {
     };
   },
   methods: {
+    async deleteAgency(id) {
+      const param = {};
+      param.reason = '无';
+      const res = await this.$xhr('post', `${PLATFORM_DELETE_ORGANIZ}${id}`, param);
+      if (res.data.code === 0) {
+        this.search(this.page);
+      }
+    },
     async search(page, type) {
       const param = {};
       param.name = this.name;
       param.cellphone = this.cellphone;
-      param.startTime = this.startTime;
-      param.endtime = this.endtime;
+      if (this.startTime) {
+        param.startTime = new Date(this.startTime).getTime();
+      }
+      if (this.endtime) {
+        param.endtime = new Date(this.endtime).getTime();
+      }
       param.state = this.state;
       param.page = page;
       param.rows = this.rows;
@@ -122,8 +150,12 @@ export default {
       const param2 = {};
       param2.name = this.name;
       param2.cellphone = this.cellphone;
-      param2.startTime = this.startTime;
-      param2.endtime = this.endtime;
+      if (this.startTime) {
+        param2.startTime = new Date(this.startTime).getTime();
+      }
+      if (this.endtime) {
+        param2.endtime = new Date(this.endtime).getTime();
+      }
       param2.state = this.state;
       if (type === 2) {
         this.pages = 0;
@@ -136,6 +168,11 @@ export default {
   },
   components: {
     'v-pagination': pagination,
+    'el-date-picker': DatePicker,
+    'el-input': Input,
+    'el-select': Select,
+    'el-option': Option,
+    'el-button': Button,
   },
   mounted() {
     this.search(this.page);

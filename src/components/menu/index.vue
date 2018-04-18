@@ -6,7 +6,7 @@
         <li @click="setActive2"><router-link :class="{cur: active2}" to="/officermgt/list"><img class="xzyc" :src="icon2" /><img class="xzcx" :src="icon22" />申报官管理</router-link></li>
         <li @click="setActive3"><router-link :class="{cur: active3}" to="/entmgt/list"><img class="xzyc" :src="icon3" /><img class="xzcx" :src="icon33" />申报企业管理</router-link></li>
         <li @click="setActive4"><router-link :class="{cur: active4}" to="/xxx"><img class="xzyc" :src="icon4" /><img class="xzcx" :src="icon44" />网站管理</router-link></li>
-        <li @click="setActive5"><router-link :class="{cur: active5}" to="/xxx"><img class="xzyc" :src="icon5" /><img class="xzcx" :src="icon55" />考试系统</router-link></li>
+        <li @click="setActive5"><router-link :class="{cur: active5}" to="/exam/list"><img class="xzyc" :src="icon5" /><img class="xzcx" :src="icon55" />考试系统</router-link></li>
       </ul>
     </div>
   </nav>
