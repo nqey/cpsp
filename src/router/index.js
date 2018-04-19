@@ -48,12 +48,12 @@ export default new Router({
       component: officermgtdetail,
     },
     {
-      path: '/exam/edit',
+      path: '/exam/edit/:id',
       name: 'examEdit',
       component: examEdit,
     },
     {
-      path: '/exam/view',
+      path: '/exam/view/:id',
       name: 'examView',
       component: examView,
     },

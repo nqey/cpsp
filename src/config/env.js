@@ -1,5 +1,5 @@
 const test = (() => {
-  if (/cpsdb77.com/.test(window.location.hostname) || /test.com/.test(window.location.hostname)) {
+  if (/cpsdb61.com/.test(window.location.hostname) || /test.com/.test(window.location.hostname)) {
     return 'online';
   } else if (/cpsdb.com/.test(window.location.hostname)) {
     return 'online';
@@ -12,7 +12,7 @@ const ENTERPRISE_BASE_URL = (() => {
     case 'test':
       return '//ep.lh-xm.com/';
     case 'online':
-      return '//ep.cpsdb77.com/';
+      return '//ep.cpsdb61.com/';
     default :
       return location.hostname.indexOf(LOCAL_URL) >= 0
         ? `//cps${LOCAL_URL}/enterprise/`
@@ -24,7 +24,7 @@ const BASE_URL = (() => {
     case 'test':
       return '//base.cpsdb.com/';
     case 'online':
-      return '//base.cpsdb77.com/';
+      return '//base.cpsdb61.com/';
     default :
       return location.hostname.indexOf(LOCAL_URL) >= 0
         ? `//cps${LOCAL_URL}/enterprise/`
@@ -34,11 +34,11 @@ const BASE_URL = (() => {
 const EXAM_BASE_URL = (() => {
   switch (test) {
     case 'test':
-      return '//exam.cpsdb77.com/';
+      return '//exam.cpsdb61.com/';
     case 'online':
-      return '//exam.cpsdb77.com/';
+      return '//exam.cpsdb61.com/';
     default :
-      return '//exam.cpsdb77.com/';
+      return '//exam.cpsdb61.com/';
   }
 })();
 const DECLARE_BASE_URL = (() => {
@@ -46,7 +46,7 @@ const DECLARE_BASE_URL = (() => {
     case 'test':
       return '//dec.lh-xm.com/';
     case 'online':
-      return '//dec.cpsdb77.com/';
+      return '//dec.cpsdb61.com/';
     default :
       return location.hostname.indexOf(LOCAL_URL) >= 0
         ? `//cps${LOCAL_URL}/declare/`
@@ -58,7 +58,7 @@ const IMAGE_SERVER_URL = (() => {
     case 'test':
       return '//pic.lh-xm.com/';
     case 'online':
-      return '//pic.cpsdb77.com/';
+      return '//pic.cpsdb61.com/';
     default :
       return '//192.168.1.47:9000/';
   }
@@ -68,7 +68,7 @@ const DOMAIN = (() => {
     case 'test':
       return 'lh-xm.com';
     case 'online':
-      return 'cpsdb77.com';
+      return 'cpsdb61.com';
     default :
       return location.hostname.indexOf(LOCAL_URL) >= 0 ? LOCAL_URL : location.hostname;
   }
@@ -225,6 +225,10 @@ const PLATFORM_GET_EXAMS_COUNTS = `${EXAM_BASE_URL}/platform/declareexamination/
 const PLATFORM_GET_EXAMS_LISTING = `${EXAM_BASE_URL}/platform/declareexamination/exams/listing`;
 // 考试的创建添加
 const PLATFORM_POST_EXAMS_CREATION = `${EXAM_BASE_URL}/platform/declareexamination/creation`;
+// 试卷的考题添加和编辑 + {id}
+const PLATFORM_POST_EXAMS_ADDITIONORUPDATING = `${EXAM_BASE_URL}/platform/declareexamination/additionOrUpdating/`;
+// 获取待编辑考试题目 + {id}
+const PLATFORM_POST_EXAMS_EDITION = `${EXAM_BASE_URL}/platform/declareexamination/edition/`;
 // ================================公告===================================================
 // 最新显示在页面上的信息
 const PUBLICS_GET_NOTICES_NEWEST = `${DECLARE_BASE_URL}/publics/notices/newest`;
@@ -315,4 +319,6 @@ export {
   PLATFORM_GET_EXAMS_LISTING,
   PLATFORM_GET_EXAMS_COUNTS,
   PLATFORM_POST_EXAMS_CREATION,
+  PLATFORM_POST_EXAMS_ADDITIONORUPDATING,
+  PLATFORM_POST_EXAMS_EDITION,
 };

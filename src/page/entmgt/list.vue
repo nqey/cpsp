@@ -21,7 +21,7 @@
               </el-date-picker>
               <span class="text-center">至</span>
               <el-date-picker
-                v-model="endtime"
+                v-model="endTime"
                 type="date"
                 placeholder="结束时间">
               </el-date-picker>
@@ -91,9 +91,10 @@ export default {
       name: '',
       organizName: '',
       startTime: '',
-      endtime: '',
+      endTime: '',
       state: '',
       status: {
+        '': '请选择',
         waitPending: '申报企业待初审',
         waitUnPending: '初审未通过',
         waitPended: '初审通过',
@@ -161,8 +162,8 @@ export default {
       if (this.startTime) {
         param.startTime = new Date(this.startTime).getTime();
       }
-      if (this.endtime) {
-        param.endtime = new Date(this.endtime).getTime();
+      if (this.endTime) {
+        param.endTime = new Date(this.endTime).getTime();
       }
       param.page = page;
       param.rows = this.rows;
@@ -180,8 +181,8 @@ export default {
       if (this.startTime) {
         param2.startTime = new Date(this.startTime).getTime();
       }
-      if (this.endtime) {
-        param2.endtime = new Date(this.endtime).getTime();
+      if (this.endTime) {
+        param2.endTime = new Date(this.endTime).getTime();
       }
       param2.state = this.state;
       if (type === 2) {

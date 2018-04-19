@@ -132,7 +132,7 @@
          </fieldset>
       </div>
       <div class="clearfix yz_correct">
-       <button class="btn pull-left">完成</button>
+       <button class="btn pull-left" @click="submit">完成</button>
        <a class="back_icon" @click="view">预览</a>
       </div>
      </div>
@@ -236,6 +236,7 @@ import tp from '@/assets/img/tp.png';
 import tj from '@/assets/img/tj.png';
 import jy from '@/assets/img/jy.png';
 import zh from '@/assets/img/zh.png';
+import { PLATFORM_POST_EXAMS_ADDITIONORUPDATING } from '@/config/env';
 
 export default {
   data() {
@@ -449,12 +450,27 @@ export default {
       window.sessionStorage.setItem('singleQS', JSON.stringify(this.singleQS));
       window.sessionStorage.setItem('multipleQS', JSON.stringify(this.multipleQS));
       window.sessionStorage.setItem('essayQS', JSON.stringify(this.essayQS));
-      this.$router.push('/exam/view');
+      this.$router.push(`/exam/view/${this.$route.params.id}`);
     },
     init() {
       if (window.sessionStorage.getItem('singleQS')) this.singleQS = JSON.parse(window.sessionStorage.getItem('singleQS'));
       if (window.sessionStorage.getItem('multipleQS')) this.multipleQS = JSON.parse(window.sessionStorage.getItem('multipleQS'));
       if (window.sessionStorage.getItem('essayQS')) this.essayQS = JSON.parse(window.sessionStorage.getItem('essayQS'));
+    },
+    async submit() {
+      const param = {};
+      param.questionList = [...this.singleQS, ...this.multipleQS, ...this.essayQS];
+      param.questionList.forEach((d) => {
+        if (d.options) {
+          d.content = d.options;
+          delete d.options;
+        }
+      });
+      param.questionList = JSON.stringify(param.questionList);
+      const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_ADDITIONORUPDATING}${this.$route.params.id}`, param);
+      if (res.data.code === 0) {
+        this.$router.push(`/exam/edit/${res.data.data}`);
+      }
     },
   },
   mounted() {

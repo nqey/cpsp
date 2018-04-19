@@ -1,37 +1,75 @@
 <template>
 <section class="index_content clearfix">
   <div class="col-md-10 col-md-offset-1">
-    <div class="index_table_tit clearfix">
+    <div class="clearfix">
       <div class="col-md-10 col-md-offset-1">
        <router-link to="/exam/list" class="btn back_icon"><img :src="backicon">返回</router-link>
       </div>
     </div>
-    <div class="index_table index_table_con clearfix">
+    <div class="clearfix">
       <div class="col-md-6 col-md-offset-3 clearfix ht_cjks">
         <div class="form-group clearfix">
           <div class="content_left"><b>考试名称</b></div>
           <div class="content_right clearfix">
-            <input type="text" class="form-control" />
+            <input type="text" class="form-control" v-model="name"/>
           </div>
         </div>
         <div class="form-group clearfix">
           <div class="content_left"><b>说明</b></div>
           <div class="content_right clearfix">
-            <textarea type="text" rows="5" class="form-control" />
+            <textarea type="text" rows="5" class="form-control" v-model="illustrate"/>
           </div>
         </div>
         <div class="form-group clearfix">
-          <div class="content_left"><b>开始时间</b></div>
+          <div class="content_left"><b>持续时间</b></div>
           <div class="content_right clearfix">
-            <el-date-picker
-		      v-model="startDate"
-		      type="date"
-		      placeholder="选择日期">
-		    </el-date-picker>
+            <input type="text" class="form-control" v-model="duration"/>
           </div>
         </div>
+        <div class="form-group clearfix">
+          <div class="content_left"><b>开考时间</b></div>
+          <div class="content_right clearfix">
+            <el-date-picker
+              v-model="examStartTime"
+              type="date"
+              placeholder="起始时间">
+            </el-date-picker>
+            <span class="text-center">至</span>
+            <el-date-picker
+              v-model="examEndTime"
+              type="date"
+              placeholder="结束时间">
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="form-group clearfix">
+          <div class="content_left"><b>申报官拿证时间</b></div>
+          <div class="content_right clearfix">
+            <el-date-picker
+              v-model="objectStartTime"
+              type="date"
+              placeholder="起始时间">
+            </el-date-picker>
+            <span class="text-center">至</span>
+            <el-date-picker
+              v-model="objectEndTime"
+              type="date"
+              placeholder="结束时间">
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="form-group clearfix">
+          <div class="content_left"><b>考试对象</b></div>
+          <div class="content_right clearfix">
+            <el-checkbox-group v-model="rules">
+              <el-checkbox label="未参加考试" key="1"></el-checkbox>
+              <el-checkbox label="考试不及格" key="2"></el-checkbox>
+            </el-checkbox-group>
+          </div>
+        </div>
+        
         <div class="text-center">
-          <button class="btn btn_sure wz_btn">立即创建</button>
+          <button class="btn btn_sure wz_btn" @click="submit">立即创建</button>
         </div>
       </div>
     </div>
@@ -41,25 +79,61 @@
 
 <script>
 import backicon from '@/assets/img/back_icon.png';
-// import { PLATFORM_POST_EXAMS_CREATION } from '@/config/env';
-import { DatePicker } from 'element-ui';
+import { PLATFORM_POST_EXAMS_CREATION } from '@/config/env';
+import { DatePicker, Checkbox, CheckboxGroup } from 'element-ui';
+
 
 export default {
   data() {
     return {
       backicon,
-      startDate: '',
+      name: '',
+      duration: '',
+      illustrate: '',
+      rules: [],
+      objectStartTime: '',
+      objectEndTime: '',
+      examStartTime: '',
+      examEndTime: '',
     };
   },
   methods: {
     async submit() {
-      // const res = await this.$xhr('get', `${PLATFORM_POST_EXAMS_CREATION}`);
-      // if (res.data.code === 0) {
-      // }
+      const param = {};
+      param.name = this.name;
+      param.duration = this.duration;
+      param.illustrate = this.illustrate;
+      param.rules = this.rules.map((d) => {
+        if (d === '未参加考试') {
+          return 1;
+        }
+        if (d === '考试不及格') {
+          return 2;
+        }
+        return 0;
+      });
+      if (this.objectStartTime) {
+        param.objectStartTime = new Date(this.objectStartTime).getTime();
+      }
+      if (this.objectEndTime) {
+        param.objectEndTime = new Date(this.objectEndTime).getTime();
+      }
+      if (this.examStartTime) {
+        param.examStartTime = new Date(this.examStartTime).getTime();
+      }
+      if (this.examEndTime) {
+        param.examEndTime = new Date(this.examEndTime).getTime();
+      }
+      const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_CREATION}`, param);
+      if (res.data.code === 0) {
+        this.$router.push(`/exam/edit/${res.data.data}`);
+      }
     },
   },
   components: {
     'el-date-picker': DatePicker,
+    'el-checkbox': Checkbox,
+    'el-checkbox-group': CheckboxGroup,
   },
   mounted() {
   },
@@ -537,7 +611,7 @@ table {
   margin-top: 30px;
 }
 .ht_cjks {
-  padding-top: 10%;
+  padding-top: 5%;
 }
 .ht_cjks .btn {
   margin-top: 60px;

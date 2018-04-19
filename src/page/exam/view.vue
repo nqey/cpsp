@@ -3,7 +3,7 @@
   <div class="col-md-10 col-md-offset-1">
     <div class="index_table_tit clearfix">
       <div class="col-md-10 col-md-offset-1">
-       <router-link to="/exam/edit" class="btn back_icon"><img :src="backicon">返回</router-link>
+       <router-link :to="'/exam/edit/' + $route.params.id" class="btn back_icon"><img :src="backicon">返回</router-link>
       </div>
     </div>
     <div class="index_table index_table_con clearfix">
