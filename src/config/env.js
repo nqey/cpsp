@@ -86,6 +86,10 @@ const ENTERPRISE_TYPE = {
 };
 
 // api
+// 获取二维码
+const DECLARE_QCODE = `${DECLARE_BASE_URL}publics/qcode.jpg`;
+// 获取二维码
+const DECLARE_DOWNLOAD_QCODE = `${DECLARE_BASE_URL}platform/declarer/download/qrcode.jpg`;
 // 获取图片验证码
 const CHECKNUMBER = `${BASE_URL}publics/checknumber.jpg?t=`;
 // 申报机构登录接口地址
@@ -213,22 +217,47 @@ const PLATFORM_GET_DECLARER_ENTERPRISE_ID = `${DECLARE_BASE_URL}platform/declare
 const PLATFORM_PUT_DECLARER_ENTERPRISE_AUDIT = `${DECLARE_BASE_URL}platform/declare/enterprise/audit/`;
 // 申报企业审核
 const PLATFORM_PUT_DECLARER_ENTERPRISE_WAITAUDIT = `${DECLARE_BASE_URL}platform/declare/enterprise/waitAudit/`;
-
 // ================================考试系统接口===================================================
 // 根据考生的name、certificate和phone返回具体的考生对象，如果无则返回null;
 const PLATFORM_GET_DECLARER_EXAMINATION = `${DECLARE_BASE_URL}publics/declarer/examination`;
 // 根据考生的id更新考生的总分数;
 const PLATFORM_POST_DECLARER_SCORE = `${DECLARE_BASE_URL}platform/declarer/score`;
 // 动态条件查询下的考试对象总数
-const PLATFORM_GET_EXAMS_COUNTS = `${EXAM_BASE_URL}/platform/declareexamination/exams/counts`;
+const PLATFORM_GET_EXAMS_COUNTS = `${EXAM_BASE_URL}platform/declareexamination/exams/counts`;
 // 动态条件查询下的考试对象的分页显示列表
-const PLATFORM_GET_EXAMS_LISTING = `${EXAM_BASE_URL}/platform/declareexamination/exams/listing`;
+const PLATFORM_GET_EXAMS_LISTING = `${EXAM_BASE_URL}platform/declareexamination/exams/listing`;
 // 考试的创建添加
-const PLATFORM_POST_EXAMS_CREATION = `${EXAM_BASE_URL}/platform/declareexamination/creation`;
+const PLATFORM_POST_EXAMS_CREATION = `${EXAM_BASE_URL}platform/declareexamination/creation`;
 // 试卷的考题添加和编辑 + {id}
-const PLATFORM_POST_EXAMS_ADDITIONORUPDATING = `${EXAM_BASE_URL}/platform/declareexamination/additionOrUpdating/`;
+const PLATFORM_POST_EXAMS_ADDITIONORUPDATING = `${EXAM_BASE_URL}platform/declareexamination/additionOrUpdating/`;
 // 获取待编辑考试题目 + {id}
-const PLATFORM_POST_EXAMS_EDITION = `${EXAM_BASE_URL}/platform/declareexamination/edition/`;
+const PLATFORM_POST_EXAMS_EDITION = `${EXAM_BASE_URL}platform/declareexamination/edition/`;
+// 该试卷的考生分页显示列表 + {id}
+const PLATFORM_POST_EXAMS_EXAMINEE_LISTING = `${EXAM_BASE_URL}platform/declareexamination/examinee/listing/`;
+// 该试卷的考生分页显示列表总数 + {id}
+const PLATFORM_POST_EXAMS_EXAMINEE_COUNTS = `${EXAM_BASE_URL}platform/declareexamination/examinee/counts/`;
+// 开启考卷 + {id}
+const PLATFORM_POST_EXAMS_EXAMINEE_ENTRANCE = `${EXAM_BASE_URL}platform/declareexamination/entrance/`;
+// 复制考卷 + {id}
+const PLATFORM_POST_EXAMS_EXAMINEE_COPYING = `${EXAM_BASE_URL}platform/declareexamination/copying/`;
+// 删除或者关闭考试 + {id}
+const PLATFORM_POST_EXAMS_EXAMINEE_CLOSEORDELETE = `${EXAM_BASE_URL}platform/declareexamination/closeOrDelete/`;
+// qrcode 发送考试+ {id}
+const PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONIMAGE = `${EXAM_BASE_URL}platform/declareexamination/publicationimage/`;
+// 下载qrcode
+const PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADQRCODE = `${EXAM_BASE_URL}/platform/declareexamination/downloadqrcode/`;
+// url 发送考试
+const PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONURL = `${EXAM_BASE_URL}platform/declareexamination/publicationurl/`;
+// 设置时长
+const PLATFORM_POST_EXAMS_EXAMINEE_TIMESETTING = `${EXAM_BASE_URL}platform/declareexamination/timesetting`;
+// 考试对象
+const PLATFORM_POST_EXAMS_EXAMINEE_OBJECTSETTING = `${EXAM_BASE_URL}platform/declareexamination/objectsetting`;
+// 下载试卷
+const PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADEXCEL = `${EXAM_BASE_URL}platform/declareexamination/downloadexcel/`;
+// 查看考生试卷详情
+const PLATFORM_POST_EXAMS_EXAMINEE_DETAILS = `${EXAM_BASE_URL}/platform/declareexamination/details/`;
+// 简答题打分
+const PLATFORM_POST_EXAMS_EXAMINEE_SCORES = `${EXAM_BASE_URL}/platform/declareexamination/scores`;
 // ================================公告===================================================
 // 最新显示在页面上的信息
 const PUBLICS_GET_NOTICES_NEWEST = `${DECLARE_BASE_URL}/publics/notices/newest`;
@@ -321,4 +350,19 @@ export {
   PLATFORM_POST_EXAMS_CREATION,
   PLATFORM_POST_EXAMS_ADDITIONORUPDATING,
   PLATFORM_POST_EXAMS_EDITION,
+  PLATFORM_POST_EXAMS_EXAMINEE_LISTING,
+  PLATFORM_POST_EXAMS_EXAMINEE_COUNTS,
+  PLATFORM_POST_EXAMS_EXAMINEE_ENTRANCE,
+  PLATFORM_POST_EXAMS_EXAMINEE_COPYING,
+  PLATFORM_POST_EXAMS_EXAMINEE_CLOSEORDELETE,
+  PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONIMAGE,
+  PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONURL,
+  PLATFORM_POST_EXAMS_EXAMINEE_TIMESETTING,
+  PLATFORM_POST_EXAMS_EXAMINEE_OBJECTSETTING,
+  PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADEXCEL,
+  PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADQRCODE,
+  DECLARE_QCODE,
+  DECLARE_DOWNLOAD_QCODE,
+  PLATFORM_POST_EXAMS_EXAMINEE_DETAILS,
+  PLATFORM_POST_EXAMS_EXAMINEE_SCORES,
 };

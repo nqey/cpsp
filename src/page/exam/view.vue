@@ -40,10 +40,10 @@
           </div>
           <div class="div_title_cut_question"><b>二、简答题</b></div>
           <div class="div_question">
-            <div class="div_table_radio_question">
+            <div class="div_table_radio_question" v-for="(e, index) of essayQS">
               <div class="div_title_question_all">
                 <div class="div_title_question">
-                  <span class="number">1、</span>对中国商品诚信数据库的了解。<span class="req">&nbsp;*（分值：10分）</span>
+                  <span class="number">{{index+1}}、</span>{{e.title}}<span class="req">&nbsp;*（分值：{{e.score}}分）</span>
                 </div>
               </div>
               <textarea title="" class="inputtext inputtext_ck" placeholder="请输入您的答案 "></textarea>
@@ -73,9 +73,9 @@ export default {
   },
   methods: {
     init() {
-      if (window.sessionStorage.getItem('singleQS')) this.singleQS = JSON.parse(window.sessionStorage.getItem('singleQS'));
-      if (window.sessionStorage.getItem('multipleQS')) this.multipleQS = JSON.parse(window.sessionStorage.getItem('multipleQS'));
-      if (window.sessionStorage.getItem('essayQS')) this.essayQS = JSON.parse(window.sessionStorage.getItem('essayQS'));
+      if (window.sessionStorage.getItem('singleQS') !== 'undefined') this.singleQS = JSON.parse(window.sessionStorage.getItem('singleQS'));
+      if (window.sessionStorage.getItem('multipleQS') !== 'undefined') this.multipleQS = JSON.parse(window.sessionStorage.getItem('multipleQS'));
+      if (window.sessionStorage.getItem('essayQS') !== 'undefined') this.essayQS = JSON.parse(window.sessionStorage.getItem('essayQS'));
     },
   },
   mounted() {

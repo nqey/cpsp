@@ -2,11 +2,13 @@
   <nav class="index_nav clearfix">
     <div class="col-md-10 col-md-offset-1">
       <ul class="clearfix nav_nav">
-        <li @click="setActive1"><router-link :class="{cur: active1}" to="/agencymgt/list"><img class="xzyc" :src="icon1" /><img class="xzcx" :src="icon11" />申报机构管理</router-link></li>
-        <li @click="setActive2"><router-link :class="{cur: active2}" to="/officermgt/list"><img class="xzyc" :src="icon2" /><img class="xzcx" :src="icon22" />申报官管理</router-link></li>
-        <li @click="setActive3"><router-link :class="{cur: active3}" to="/entmgt/list"><img class="xzyc" :src="icon3" /><img class="xzcx" :src="icon33" />申报企业管理</router-link></li>
-        <li @click="setActive4"><router-link :class="{cur: active4}" to="/xxx"><img class="xzyc" :src="icon4" /><img class="xzcx" :src="icon44" />网站管理</router-link></li>
-        <li @click="setActive5"><router-link :class="{cur: active5}" to="/exam/list"><img class="xzyc" :src="icon5" /><img class="xzcx" :src="icon55" />考试系统</router-link></li>
+        <li v-for="(v, k) of menu" @click="toActive(v)">
+          <router-link :class="{cur: v.active}"  :to="v.link">
+            <img class="xzyc" :src="v.icon1" />
+            <img class="xzcx" :src="v.icon2" />
+            {{v.title}}
+          </router-link>
+        </li>
       </ul>
     </div>
   </nav>
@@ -23,17 +25,11 @@ import icon4 from '@/assets/img/icon4.png';
 import icon44 from '@/assets/img/icon4-4.png';
 import icon5 from '@/assets/img/icon5.png';
 import icon55 from '@/assets/img/icon5-5.png';
-import { getCookie, setCookie } from '@/config/cookie';
 
 export default {
   name: 'lmenu',
   data() {
     return {
-      active1: true,
-      active2: false,
-      active3: false,
-      active4: false,
-      active5: false,
       icon1,
       icon11,
       icon2,
@@ -44,66 +40,64 @@ export default {
       icon44,
       icon5,
       icon55,
+      menu: {
+        agencymgt: {
+          title: '申报机构管理',
+          icon: icon1,
+          icon2: icon11,
+          link: '/agencymgt/list',
+          active: true,
+        },
+        officermgt: {
+          title: '申报官管理',
+          icon: icon2,
+          icon2: icon22,
+          link: '/officermgt/list',
+          active: false,
+        },
+        entmgt: {
+          title: '申报企业管理',
+          icon: icon3,
+          icon2: icon33,
+          link: '/entmgt/list',
+          active: false,
+        },
+        XXXX: {
+          title: '网站管理',
+          icon: icon4,
+          icon2: icon44,
+          link: '/XXXX',
+          active: false,
+        },
+        exam: {
+          title: '申报企业管理',
+          icon: icon5,
+          icon2: icon55,
+          link: '/exam/list',
+          active: false,
+        },
+      },
     };
   },
   methods: {
-    setActive1() {
-      this.active1 = true;
-      this.active2 = false;
-      this.active3 = false;
-      this.active4 = false;
-      this.active5 = false;
-      setCookie('active', 1);
-    },
-    setActive2() {
-      this.active1 = false;
-      this.active2 = true;
-      this.active3 = false;
-      this.active4 = false;
-      this.active5 = false;
-      setCookie('active', 2);
-    },
-    setActive3() {
-      this.active1 = false;
-      this.active2 = false;
-      this.active3 = true;
-      this.active4 = false;
-      this.active5 = false;
-      setCookie('active', 3);
-    },
-    setActive4() {
-      this.active1 = false;
-      this.active2 = false;
-      this.active3 = false;
-      this.active4 = true;
-      this.active5 = false;
-      setCookie('active', 4);
-    },
-    setActive5() {
-      this.active1 = false;
-      this.active2 = false;
-      this.active3 = false;
-      this.active4 = false;
-      this.active5 = true;
-      setCookie('active', 5);
+    toActive(m) {
+      Object.values(this.menu).forEach((o) => {
+        o.active = false;
+      });
+      m.active = true;
     },
   },
   mounted() {
-    const active = getCookie('active');
-    if (active === '1') {
-      this.setActive1();
-    }
-    if (active === '2') {
-      this.setActive2();
-    }
-    if (active === '3') {
-      this.setActive3();
-    }
-    if (active === '4') {
-      this.setActive4();
-    }
-    if (active === '5') {
-      this.setActive5();
+    if (location.hash.match('agencymgt')) {
+      this.toActive(this.menu.agencymgt);
+    } else if (location.hash.match('officermgt')) {
+      this.toActive(this.menu.officermgt);
+    } else if (location.hash.match('entmgt')) {
+      this.toActive(this.menu.entmgt);
+    } else if (location.hash.match('XXXX')) {
+      this.toActive(this.menu.XXXX);
+    } else if (location.hash.match('exam')) {
+      this.toActive(this.menu.exam);
     }
   },
 };

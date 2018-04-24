@@ -2,9 +2,9 @@
  <section class="index_content clearfix">
    <div class="col-md-10 col-md-offset-1">
     <div class="index_table_tit clearfix">
-     <div class="col-md-10 col-md-offset-1">
-      <a href="#" class="">考试系统&gt;</a>创建考试 
-     </div>
+      <div class="col-md-10 col-md-offset-1">
+       <router-link to="/exam/list" class="btn back_icon"><img :src="backicon">返回</router-link>
+      </div>
     </div>
     <div class="index_table index_table_con clearfix">
      <div class="col-md-8 col-md-offset-2">
@@ -236,11 +236,13 @@ import tp from '@/assets/img/tp.png';
 import tj from '@/assets/img/tj.png';
 import jy from '@/assets/img/jy.png';
 import zh from '@/assets/img/zh.png';
-import { PLATFORM_POST_EXAMS_ADDITIONORUPDATING } from '@/config/env';
+import backicon from '@/assets/img/back_icon.png';
+import { PLATFORM_POST_EXAMS_ADDITIONORUPDATING, PLATFORM_POST_EXAMS_EDITION } from '@/config/env';
 
 export default {
   data() {
     return {
+      backicon,
       bj,
       cz,
       sc,
@@ -428,12 +430,21 @@ export default {
     copy(index, type) {
       if (type === 'single') {
         const o = JSON.parse(JSON.stringify(this.singleQS[index]));
+        if (o.id) {
+          delete o.id;
+        }
         this.singleQS.push(o);
       } else if (type === 'multiple') {
         const o = JSON.parse(JSON.stringify(this.multipleQS[index]));
+        if (o.id) {
+          delete o.id;
+        }
         this.multipleQS.push(o);
       } else if (type === 'essay') {
         const o = JSON.parse(JSON.stringify(this.essayQS[index]));
+        if (o.id) {
+          delete o.id;
+        }
         this.essayQS.push(o);
       }
     },
@@ -452,24 +463,81 @@ export default {
       window.sessionStorage.setItem('essayQS', JSON.stringify(this.essayQS));
       this.$router.push(`/exam/view/${this.$route.params.id}`);
     },
-    init() {
-      if (window.sessionStorage.getItem('singleQS')) this.singleQS = JSON.parse(window.sessionStorage.getItem('singleQS'));
-      if (window.sessionStorage.getItem('multipleQS')) this.multipleQS = JSON.parse(window.sessionStorage.getItem('multipleQS'));
-      if (window.sessionStorage.getItem('essayQS')) this.essayQS = JSON.parse(window.sessionStorage.getItem('essayQS'));
+    async init() {
+      const res = await this.$xhr('get', `${PLATFORM_POST_EXAMS_EDITION}${this.$route.params.id}`);
+      if (res.data.code === 0) {
+        this.singleQS = res.data.data.questionMap.single || [];
+        this.multipleQS = res.data.data.questionMap.multiple || [];
+        this.essayQS = res.data.data.questionMap.essay || [];
+        if (this.singleQS) {
+          this.singleQS.forEach((o) => {
+            o.options = JSON.parse(o.content);
+            o.type = o.subjectType;
+            delete o.content;
+            delete o.subjectType;
+          });
+        }
+        if (this.multipleQS) {
+          this.multipleQS.forEach((o) => {
+            o.options = JSON.parse(o.content);
+            o.type = o.subjectType;
+            delete o.content;
+            delete o.subjectType;
+          });
+        }
+        if (this.essayQS) {
+          this.essayQS.forEach((o) => {
+            o.type = o.subjectType;
+            delete o.subjectType;
+          });
+        }
+        if (window.sessionStorage.getItem('singleQS') !== 'undefined') {
+          const singleQS = JSON.parse(window.sessionStorage.getItem('singleQS'));
+          if (singleQS) {
+            singleQS.forEach((o) => {
+              if (!o.id) {
+                this.singleQS.push(o);
+              }
+            });
+          }
+        }
+        if (window.sessionStorage.getItem('multipleQS') !== 'undefined') {
+          const multipleQS = JSON.parse(window.sessionStorage.getItem('multipleQS'));
+          if (multipleQS) {
+            multipleQS.forEach((o) => {
+              if (!o.id) {
+                this.multipleQS.push(o);
+              }
+            });
+          }
+        }
+        if (window.sessionStorage.getItem('essayQS') !== 'undefined') {
+          const essayQS = JSON.parse(window.sessionStorage.getItem('essayQS'));
+          if (essayQS) {
+            essayQS.forEach((o) => {
+              if (!o.id) {
+                this.essayQS.push(o);
+              }
+            });
+          }
+        }
+      }
     },
     async submit() {
       const param = {};
-      param.questionList = [...this.singleQS, ...this.multipleQS, ...this.essayQS];
+      param.questionList = JSON.stringify([...this.singleQS, ...this.multipleQS, ...this.essayQS]);
+      param.questionList = JSON.parse(param.questionList);
       param.questionList.forEach((d) => {
         if (d.options) {
-          d.content = d.options;
+          d.content = JSON.stringify(d.options);
+          d.answer = d.answer.join ? d.answer.join(',') : d.answer;
           delete d.options;
         }
       });
       param.questionList = JSON.stringify(param.questionList);
       const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_ADDITIONORUPDATING}${this.$route.params.id}`, param);
       if (res.data.code === 0) {
-        this.$router.push(`/exam/edit/${res.data.data}`);
+        this.$router.push('/exam/list');
       }
     },
   },

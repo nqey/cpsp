@@ -12,6 +12,7 @@ const examEdit = r => require.ensure([], (require) => { r(require('@/page/exam/e
 const examView = r => require.ensure([], (require) => { r(require('@/page/exam/view')); }, 'examView');
 const examList = r => require.ensure([], (require) => { r(require('@/page/exam/list')); }, 'examList');
 const examNew = r => require.ensure([], (require) => { r(require('@/page/exam/new')); }, 'examNew');
+const examDetail = r => require.ensure([], (require) => { r(require('@/page/exam/detail')); }, 'examDetail');
 
 Vue.use(Router);
 
@@ -66,6 +67,11 @@ export default new Router({
       path: '/exam/new',
       name: 'examNew',
       component: examNew,
+    },
+    {
+      path: '/exam/detail/:id',
+      name: 'examDetail',
+      component: examDetail,
     },
     {
       path: '/login',

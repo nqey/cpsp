@@ -68,6 +68,16 @@
               </div>
             </div>
           </div>
+           <div class="form-group clearfix">
+            <div class="content_left"><b>二维码</b></div>
+            <div class="content_right">
+              <div class="content_right clearfix" v-if="letterImageUrl">
+                <img :src="qrCode"></img>
+                <br/>
+                <a :href="downQrCode" target="_blank">下载二维码</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="index_sh clearfix" v-if="isShowStatus">
@@ -108,7 +118,7 @@
 import backicon from '@/assets/img/back_icon.png';
 import vimg from '@/components/img/img';
 import { formatDate } from '@/config/utils';
-import { PLATFORM_GET_DECLARER, PLATFORM_PUT_DECLARER_AUDIT, PLATFORM_PUT_DECLARER_WAITAUDIT, IMAGE_SERVER_URL } from '@/config/env';
+import { PLATFORM_GET_DECLARER, PLATFORM_PUT_DECLARER_AUDIT, PLATFORM_PUT_DECLARER_WAITAUDIT, IMAGE_SERVER_URL, DECLARE_QCODE, DECLARE_DOWNLOAD_QCODE } from '@/config/env';
 
 export default {
   name: 'detail',
@@ -135,6 +145,8 @@ export default {
       state: '',
       surveyImageUrl: '',
       reason: '',
+      qrCode: '',
+      downQrCode: '',
       status: {
         create: ['添加', 'pass'],
         waitPending: ['待初审', 'base'],
@@ -178,6 +190,8 @@ export default {
         if (this.status[this.state][1] === 'pass') {
           this.isShowStatus = false;
         }
+        this.qrCode = `${DECLARE_QCODE}?id=${this.$route.params.id}`;
+        this.downQrCode = `${DECLARE_DOWNLOAD_QCODE}?id=${this.$route.params.id}`;
       }
     },
     async submit(state) {

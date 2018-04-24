@@ -7,7 +7,7 @@
           <!-- <a type="submit" class="btn btn_search" >创建考试</a> -->
           <router-link to="/exam/new" class="btn btn_search">创建考试</router-link>
           <div class="form-group pull-right ks_search">
-            <input type="text" class="form-control" placeholder="请输入考试名称">
+            <input type="text" class="form-control" placeholder="请输入考试名称" v-model="name" @keypress="enter($event)"/>
             <span class="glyphicon glyphicon-search"></span> </div>
         </form>
       </div>
@@ -16,7 +16,7 @@
         <thead>
           <tr class="table_tit">
             <th><input type="checkbox" class="checkAll" rel="item" name="allbox" />
-              全选</th>
+              选项</th>
             <th>ID</th>
             <th>考试名称</th>
             <th>状态</th>
@@ -26,35 +26,30 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><input type="checkbox" class="child_item" name="box[]" value="1" /></td>
-            <td>13800000000</td>
-            <td>中国商品诚信数据库第二批申报官考试</td>
-            <td class="green">运行中</td>
-            <td><a class="color_qf" data-toggle="modal" data-target="#myModal">32</a></td>
-            <td>2018-03-27 10:05</td>
-            <td class="gc_list"><a href="#">开启</a><a href="#">关闭</a><a href="#">编辑</a><a href="#">删除</a></td>
+          <tr v-for="(item, index) of lists">
+            <td><input type="radio" name="s" :value="item.examinationId" v-model="examinationId" class="child_item" @click="setIndex(index)"/></td>
+            <td>{{item.examinationId}}</td>
+            <td>{{item.name}}</td>
+            <td class="green">{{item.state}}</td>
+            <td @click="examineeSearch(1, item.examinationId)"><a class="color_qf" data-toggle="modal" data-target="#myModal">{{item.number}}</a></td>
+            <td>{{item.createTime}}</td>
+            <td class="gc_list">
+              <a @click="openExam(item)">开启</a>
+              <a @click="closeExam(item)">关闭</a>
+              <router-link :to="'/exam/edit/' + item.examinationId">编辑</router-link>
+              <a @click="deleteExam(item, index)">删除</a>
+            </td>
           </tr>
         </tbody>
       </table>
       <div class="index_table_btn">
-        <button class="btn color_qf" data-toggle="modal" data-target="#myModal1">发送</button>
-        <button class="btn color_qf" data-toggle="modal" data-target="#myModal2">设置时长</button>
-        <button class="btn color_qf">下载数据</button>
-        <button class="btn color_qf">复制试题</button>
-        <button class="btn color_qf">考试对象</button>
+        <button class="btn color_qf" data-toggle="modal" data-target="#myModal1" @click="initSend">发送</button>
+        <button class="btn color_qf" data-toggle="modal" data-target="#myModal2" @click="initTimeExam">设置时长</button>
+        <a class="btn color_qf" :href="download + examinationId">下载数据</a>
+        <button class="btn color_qf" @click="copyExam">复制试题</button>
+        <button class="btn color_qf" data-toggle="modal" data-target="#myModal3" @click="initTargetExam">考试对象</button>
       </div>
-      <nav class="text-center">
-        <ul class="pagination">
-          <li> <a href="#" aria-label="Previous"> <span aria-hidden="true">&laquo;</span> </a> </li>
-          <li><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li> <a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span> </a> </li>
-        </ul>
-      </nav>
+      <v-pagination :page="pages" @nextPage="search"></v-pagination>
     </div>
   </div>
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -76,25 +71,15 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>01</td>
-                <td>苏菲娜</td>
-                <td>2018-03-26 16:33</td>
-                <th class="gc_list"><a href="ht_ckkj.html">查看答卷</a></th>
+              <tr v-for="(item, index) of examineeLists">
+                <td>{{item.examExamineeId}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.submitTime}}</td>
+                <th class="gc_list" data-dismiss="modal" aria-label="Close"><router-link :to="'/exam/detail/'+item.examExamineeId">查看答卷</router-link></th>
               </tr>
             </tbody>
           </table>
-          <nav class="text-center">
-            <ul class="pagination">
-              <li> <a href="#" aria-label="Previous"> <span aria-hidden="true">&laquo;</span> </a> </li>
-              <li><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li> <a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span> </a> </li>
-            </ul>
-          </nav>
+          <v-pagination :page="examineePages" @nextPage="examineeSearch"></v-pagination>
         </div>
       </div>
     </div>
@@ -110,12 +95,12 @@
       <div class="modal-body">
         <div class="index_table_cont">
           <div class="table_cont_top">
-            <div class="fs_ewm"><img :src="ksewm" /></div>
-            <div class="fs_ewm"><a href="#" class="btn btn_search">下载二维码</a></div>
+            <div class="fs_ewm"><img :src="qrCode + examinationId" /></div>
+            <div class="fs_ewm"><a :href="downloadqrcode + examinationId" class="btn btn_search">下载二维码</a></div>
             <div style="clear:both;"></div>
           </div>
           <div class="text-center"><img :src="ffx" /></div>
-          <div class="table_cont_bottom"> <span id="con_url">http://do.cpsdb.com</span>
+          <div class="table_cont_bottom"> <span id="con_url">{{url}}</span>
             <button id="copyBT" class="btn btn_fz">复制链接</button>
             <div style="clear:both;"></div>
           </div>
@@ -136,16 +121,58 @@
           <form class="form-inline scsz">
             <div class="form-group">
               <label for="">考试日期</label>
-              <input name="" type="text" placeholder="起始时间"/>
-              <span class="text-center">至</span>
-              <input name="" type="text" placeholder="结束时间"/>
+              <el-date-picker
+                v-model="examTime"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
             </div>
             <div class="form-group">
               <label for="">设置时长</label>
-              <input type="text" placeholder="请输入考试分钟数">
+              <input type="text" placeholder="请输入考试分钟数" v-model="duration">
               <p class="mrts">默认考试时间为90分钟</p>
             </div>
-            <button class="btn btn_search">确认</button>
+            <button class="btn btn_search" type="button" @click="setTimeExam" data-dismiss="modal" aria-label="Close">确认</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-center" id="myModalLabel2"> 考试对象 </h4>
+      </div>
+      <div class="modal-body">
+        <div class="index_table_cont">
+          <form class="form-inline scsz">
+            <div class="form-group">
+              <div style="float: left;">考试对象： </div>
+              <el-checkbox-group v-model="rules">
+                <el-checkbox label="未参加考试" key="1"></el-checkbox>
+                <el-checkbox label="考试不及格" key="2"></el-checkbox>
+              </el-checkbox-group>
+              拿证时间：
+              <el-date-picker
+                v-model="objectTime"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+              <br/>
+              <br/>
+              考试名称： <div style="width: 180px;display: inline-block;"><el-input v-model="examName" placeholder="请输入考试名称"></el-input></div>
+              <br/>
+              <br/>
+              考试说明： <textarea type="text" rows="5" class="form-control" v-model="illustrate"/>
+            </div>
+            <button class="btn btn_search" type="button" @click="setTargetExam" data-dismiss="modal" aria-label="Close">确认</button>
           </form>
           
         </div>
@@ -159,17 +186,199 @@
 <script>
 import ksewm from '@/assets/img/ksewm.jpg';
 import ffx from '@/assets/img/ffx.png';
+import pagination from '@/components/pagination';
+import { PLATFORM_GET_EXAMS_LISTING, PLATFORM_GET_EXAMS_COUNTS,
+PLATFORM_POST_EXAMS_EXAMINEE_LISTING, PLATFORM_POST_EXAMS_EXAMINEE_COUNTS,
+PLATFORM_POST_EXAMS_EXAMINEE_ENTRANCE, PLATFORM_POST_EXAMS_EXAMINEE_COPYING,
+PLATFORM_POST_EXAMS_EXAMINEE_CLOSEORDELETE, PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONIMAGE,
+PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONURL, PLATFORM_POST_EXAMS_EXAMINEE_TIMESETTING,
+PLATFORM_POST_EXAMS_EXAMINEE_OBJECTSETTING, PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADEXCEL,
+PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADQRCODE } from '@/config/env';
+import { formatDate } from '@/config/utils';
+import { DatePicker, Checkbox, CheckboxGroup, Input } from 'element-ui';
 
 export default {
   data() {
     return {
+      lists: [],
+      index: 0,
       ksewm,
+      name,
       ffx,
+      page: 1,
+      rows: 2,
+      pages: 0,
+      examTime: '',
+      examineePage: 1,
+      examineeRows: 5,
+      examineePages: 0,
+      examinationId: '',
+      examineeLists: [],
+      objectTime: '',
+      illustrate: '',
+      examName: '',
+      duration: '',
+      rules: [],
+      url: '',
+      qrCode: PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONIMAGE,
+      download: PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADEXCEL,
+      downloadqrcode: PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADQRCODE,
+      status: {
+        wait: '待考试',
+        doing: '正在考试',
+        done: '考试结束',
+        checked: '试卷审查完毕',
+        close: '关闭',
+        deleted: '删除',
+      },
     };
   },
+  components: {
+    'v-pagination': pagination,
+    'el-date-picker': DatePicker,
+    'el-checkbox': Checkbox,
+    'el-checkbox-group': CheckboxGroup,
+    'el-input': Input,
+  },
   methods: {
+    async openExam(obj) {
+      const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_EXAMINEE_ENTRANCE}${obj.examinationId}`);
+      if (res.data.code === 0) {
+        obj.state = this.status[res.data.data];
+      }
+    },
+    async closeExam(obj) {
+      const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_EXAMINEE_CLOSEORDELETE}${obj.examinationId}/closed`);
+      if (res.data.code === 0) {
+        obj.state = this.status[res.data.data];
+      }
+    },
+    async deleteExam(obj, index) {
+      const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_EXAMINEE_CLOSEORDELETE}${obj.examinationId}/deleted`);
+      if (res.data.code === 0) {
+        this.lists.splice(index, 1);
+      }
+    },
+    async copyExam() {
+      const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_EXAMINEE_COPYING}${this.examinationId}`);
+      if (res.data.code === 0) {
+        this.search(1);
+      }
+    },
+    async initSend() {
+      const res = await this.$xhr('get', `${PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONURL}${this.examinationId}`);
+      if (res.data.code === 0) {
+        this.url = res.data.data;
+      }
+    },
+    initTimeExam() {
+      const item = this.lists[this.index];
+      this.duration = item.duration;
+      this.examTime = [formatDate(new Date(item.startTime), 'yyyy-MM-dd'), formatDate(new Date(item.endTime), 'yyyy-MM-dd')];
+    },
+    setIndex(index) {
+      this.index = index;
+    },
+    async setTimeExam() {
+      const param = {};
+      param.examinationId = this.examinationId;
+      param.duration = this.duration;
+      param.startTime = new Date(this.examTime[0]).getTime();
+      param.endTime = new Date(this.examTime[1]).getTime();
+      const res = await this.$xhr('post', PLATFORM_POST_EXAMS_EXAMINEE_TIMESETTING, param);
+      if (res.data.code === 0) {
+        this.search(1);
+      }
+    },
+    initTargetExam() {
+      const item = this.lists[this.index];
+      this.duration = item.duration;
+      this.objectTime = [formatDate(new Date(item.objectStartTime), 'yyyy-MM-dd'), formatDate(new Date(item.objectEndTime), 'yyyy-MM-dd')];
+      this.rules = item.rules.map((d) => {
+        if (d === 1) {
+          return '未参加考试';
+        }
+        if (d === 2) {
+          return '考试不及格';
+        }
+        return 0;
+      });
+      this.illustrate = item.illustrate;
+      this.examName = item.name;
+    },
+    enter(e) {
+      if (e.keyCode === 13) {
+        this.search(1);
+      }
+    },
+    async setTargetExam() {
+      const param = {};
+      param.id = this.examinationId;
+      param.objectStartTime = new Date(this.objectTime[0]).getTime();
+      param.objectEndTime = new Date(this.objectTime[1]).getTime();
+      param.rules = this.rules.map((d) => {
+        if (d === '未参加考试') {
+          return 1;
+        }
+        if (d === '考试不及格') {
+          return 2;
+        }
+        return 0;
+      });
+      param.illustrate = this.illustrate;
+      param.name = this.examName;
+      const res = await this.$xhr('post', PLATFORM_POST_EXAMS_EXAMINEE_OBJECTSETTING, param);
+      if (res.data.code === 0) {
+        this.search(1);
+      }
+    },
+    async search(page) {
+      const param = {};
+      param.name = this.name;
+      param.page = page;
+      param.rows = this.rows;
+      const res = await this.$xhr('get', PLATFORM_GET_EXAMS_LISTING, param);
+      if (res.data.code === 0) {
+        this.lists = res.data.data;
+        this.lists.forEach((o) => {
+          o.state = this.status[o.state];
+          o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd');
+        });
+      }
+      const param2 = {};
+      param2.name = this.name;
+      const res2 = await this.$xhr('get', PLATFORM_GET_EXAMS_COUNTS, param2);
+      if (res2.data.success) {
+        this.pages = Math.ceil(res2.data.data / param.rows);
+      }
+    },
+    async examineeSearch(page, id) {
+      if (id) {
+        this.examinationId = id;
+      }
+      const param = {};
+      param.page = this.page;
+      param.rows = this.rows;
+      param.stateList = JSON.stringify(['done', 'checked']);
+      const res = await this.$xhr('get', `${PLATFORM_POST_EXAMS_EXAMINEE_LISTING}${this.examinationId}`, param);
+      if (res.data.code === 0) {
+        this.examineeLists = res.data.data;
+        this.examineeLists.forEach((o) => {
+          o.submitTime = formatDate(new Date(o.submitTime), 'yyyy-MM-dd hh:mm:ss');
+        });
+      }
+      const param2 = {};
+      param2.page = this.examineePage;
+      param2.rows = this.examineeRows;
+      param2.stateList = JSON.stringify(['done', 'checked']);
+      const res2 = await this.$xhr('get', `${PLATFORM_POST_EXAMS_EXAMINEE_COUNTS}${this.examinationId}`, param2);
+      if (res2.data.success) {
+        this.examineePages = Math.ceil(res2.data.data / this.examineeRows);
+      }
+    },
   },
   mounted() {
+    this.search(1);
   },
 };
 

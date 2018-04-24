@@ -89,7 +89,7 @@ export default {
     return {
       lists: [],
       page: 1,
-      rows: 2,
+      rows: 10,
       pages: 0,
       name: '',
       cellphone: '',
