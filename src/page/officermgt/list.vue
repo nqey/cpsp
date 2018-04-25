@@ -101,10 +101,7 @@ export default {
       state: '',
       status: {
         '': '请选择',
-        create: '添加',
         waitPending: '待初审',
-        waitUnPending: '初审未通过',
-        waitPended: '初审通过',
         waitAudit: '待审核',
         unpass: '未通过',
         passed: '已通过',

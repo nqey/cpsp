@@ -23,7 +23,8 @@
         <div class="form-group clearfix">
           <div class="content_left"><b>持续时间</b></div>
           <div class="content_right clearfix">
-            <input type="text" class="form-control" v-model="duration"/>
+            <input type="text" class="form-control" v-model="duration" style="width:90%; display: inline-block"/>
+            分钟
           </div>
         </div>
         <div class="form-group clearfix">

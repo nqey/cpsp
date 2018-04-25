@@ -8,9 +8,9 @@
     </div>
     <div class="index_table index_table_con clearfix">
      <div class="col-md-8 col-md-offset-2">
-      <h3 class="tit_bjks text-center">中国商品诚信数据库第一批申报官考试</h3>
+      <h3 class="tit_bjks text-center">{{name}}</h3>
       <!-- <textarea title="" class="inputtext inputtext_1" placeholder="请输入考试说明"></textarea> -->
-      <span>考试说明</span>
+      <span>{{illustrate}}</span>
       <div class="cjst_btn">
        <ul>
         <li class="text-center btn_search" @click="insertToHtml('single')"><a data-toggle="modal" data-target="#myModal">插入单选题</a></li>
@@ -38,7 +38,7 @@
                   <li>
                     <label class="radio-inline">
                       <input type="radio" :value="oi" :name="index" v-model="q.answer" disabled/>
-                      <b :class="{req: oi === q.answer}">{{optionMap[oi]}}、{{o.option}}<span v-if="oi === q.answer">（正确答案）</span></b>
+                      <b :class="{req: oi === q.answer - 0}">{{optionMap[oi]}}、{{o.option}}<span v-if="oi === q.answer - 0">（正确答案）</span></b>
                     </label>
                   </li>
                 </ul>
@@ -81,31 +81,6 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="div_question" v-for="(q, index) of multipleQS">
-              <div class="div_table_radio_question">
-                <div class="div_title_question_all">
-                  <div class="div_title_question">
-                   <span class="number">{{index+1}}、</span>{{q.title}}
-                   <span class="req">&nbsp;*（分值：{{q.score}}分）</span>
-                  </div>
-                </div>
-                <ul class="ulradiocheck" v-for="(o, oi) of q.options">
-                  <li>
-                    <label class="radio-inline">
-                      <input type="checkbox" :checked="o.answer" disabled/>
-                      <b :class="{req: o.answer}">{{optionMap[oi]}}、{{o.option}}<span v-if="o.answer">（正确答案）</span></b>
-                    </label>
-                  </li>
-                </ul>
-                <div class="cjks_txxg clearfix"> 
-                  <ul class="pull-right txxg_xx"> 
-                    <li class="text-center" @click="editToHtml(index, 'multiple')"><a data-toggle="modal" data-target="#myModal"><img :src="bj" />编辑</a></li> 
-                    <li class="text-center" @click="copy(index, 'multiple')"><img :src="cz" />复制</li> 
-                    <li class="text-center" @click="del(index, 'multiple')"><img :src="sc" />删除</li> 
-                  </ul> 
-                </div>
-              </div>
-           </div> -->
            <div class="div_title_cut_question">
             <b>三、简答题</b>
            </div>
@@ -118,7 +93,7 @@
               </div>
              </div>
              <div class="jdt_jj">
-              <textarea title="" class="inputtext" placeholder="请输入内容"></textarea>
+              <textarea title="" class="inputtext" placeholder="请输入内容" disabled></textarea>
              </div>
             </div>
             <div class="cjks_txxg clearfix"> 
@@ -142,7 +117,7 @@
       <div class="modal-dialog" role="document"> 
         <div class="modal-content"> 
           <div class="modal-header clearfix"> 
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> 
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closed(type)"><span aria-hidden="true">&times;</span></button> 
           </div> 
           <div class="modal-body wzys"> 
             <div class="clearfix txxz"> 
@@ -322,6 +297,9 @@ export default {
       scores: [5, 8, 10],
       errMsg: [],
       timer: null,
+      cancelOp: null,
+      name: null,
+      illustrate: null,
     };
   },
   methods: {
@@ -331,13 +309,12 @@ export default {
         answer: '',
         image: '',
       };
+      this.answer = '';
       this.options.push(option);
     },
     delOption(index) {
       if (this.options.length === 1) return;
-      if (index === this.answer - 0) {
-        this.answer = '';
-      }
+      this.answer = '';
       this.options.splice(index, 1);
     },
     downMove(index) {
@@ -501,6 +478,16 @@ export default {
       this.type = type;
       this.score = q.score;
       this.insOrEdi = 'edit';
+      this.cancelOp = JSON.parse(JSON.stringify(q.options)) || [];
+    },
+    closed(type) {
+      if (!this.cancelOp) return;
+      if (type === 'single') {
+        this.singleQS[this.singleQI].options = this.cancelOp;
+      } else if (type === 'multiple') {
+        this.multipleQS[this.multipleQI].options = this.cancelOp;
+      }
+      this.options = this.cancelOp;
     },
     copy(index, type) {
       if (type === 'single') {
@@ -544,6 +531,8 @@ export default {
         this.singleQS = res.data.data.questionMap.single || [];
         this.multipleQS = res.data.data.questionMap.multiple || [];
         this.essayQS = res.data.data.questionMap.essay || [];
+        this.name = res.data.data.name;
+        this.illustrate = res.data.data.illustrate;
         if (this.singleQS) {
           this.singleQS.forEach((o) => {
             o.options = JSON.parse(o.content);

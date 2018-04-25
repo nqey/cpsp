@@ -49,7 +49,7 @@
                     <button type="submit" class="btn btn_search" data-toggle="modal" data-target=".bs-example-modal-sm" @click="setSubjectId(item.subjectId)">打分</button>
                   </div>
                 </div>
-                <textarea title="" class="inputtext" placeholder="答： 中国商品诚信数据库是发改委立项，新华社授权的防伪溯源系统，具有高度的统一性及权威性的防伪溯源体系，是从源头上解决商品安全问题。通过通过“一物一码”实 现个人秘钥数字签名加密、与线下离线SDK数据验证相结合、三个判断、四个参数的 方式，确保每个商品对应的二维码独一无二。 ">{{item.examineeAnswer}}</textarea>
+                <textarea title="" class="inputtext" disabled>{{item.examineeAnswer}}</textarea>
               </div>
               <div class="modal fade bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">

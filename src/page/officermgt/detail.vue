@@ -68,7 +68,7 @@
               </div>
             </div>
           </div>
-           <div class="form-group clearfix">
+           <div class="form-group clearfix" v-if="statusNm === '已通过'">
             <div class="content_left"><b>二维码</b></div>
             <div class="content_right">
               <div class="content_right clearfix" v-if="letterImageUrl">
