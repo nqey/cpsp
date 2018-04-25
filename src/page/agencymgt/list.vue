@@ -40,6 +40,7 @@
             <el-button type="primary" @click="search(1, 2)">搜索</el-button>
           </form>
         </div>
+        <span v-if="lists.length === 0">无数据</span>
         <div v-show="lists.length > 0">
           <table class="table table-hover">
             <thead>
@@ -56,7 +57,7 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) of lists">
-                <td><b>{{index + 1}}</b></td>
+                <td><b>{{item.id}}</b></td>
                 <td>{{item.name}}</td>
                 <td>{{item.cellphone}}</td>
                 <td>{{item.recommentName}}</td>
@@ -81,7 +82,7 @@
 import pagination from '@/components/pagination';
 import { PLATFORM_GET_ORGANIZ_QUERY, PLATFORM_GET_ORGANIZ_COUNT, PLATFORM_DELETE_ORGANIZ } from '@/config/env';
 import { formatDate } from '@/config/utils';
-import { DatePicker, Input, Select, Option, Button } from 'element-ui';
+import { DatePicker, Input, Select, Option, Button, MessageBox } from 'element-ui';
 
 export default {
   name: 'list',
@@ -119,12 +120,21 @@ export default {
   },
   methods: {
     async deleteAgency(id) {
-      const param = {};
-      param.reason = '无';
-      const res = await this.$xhr('post', `${PLATFORM_DELETE_ORGANIZ}${id}`, param);
-      if (res.data.code === 0) {
-        this.search(this.page);
-      }
+      MessageBox({
+        title: '提示',
+        message: '此操作将永久删除该数据, 是否继续?',
+        showCancelButton: true,
+        showConfirmButton: true,
+        type: 'warning',
+      }).then(async () => {
+        const param = {};
+        param.reason = '无';
+        const res = await this.$xhr('post', `${PLATFORM_DELETE_ORGANIZ}${id}`, param);
+        if (res.data.code === 0) {
+          this.search(this.page);
+        }
+      }).catch(() => {
+      });
     },
     async search(page, type) {
       const param = {};

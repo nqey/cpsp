@@ -70,7 +70,7 @@ export default {
           active: false,
         },
         exam: {
-          title: '申报企业管理',
+          title: '考试系统',
           icon: icon5,
           icon2: icon55,
           link: '/exam/list',

@@ -120,7 +120,7 @@
             <h4 class="modal-title" id="myModalLabel"><b>不通过原因</b></h4>
           </div>
           <div class="modal-body">
-            <textarea title="" class="inputtext btg" placeholder="请输入不通过原因"></textarea>
+            <textarea title="" class="inputtext btg" placeholder="请输入不通过原因" v-model="reason"></textarea>
           </div>
           <div class="text-center btgyy">
             <button class="btn btn_sure" v-show="isShowSubmit" data-event="pass" data-toggle="modal" data-target="#myModal" @click="submit(false)">确认</button>

@@ -15,8 +15,7 @@
       <table class="table table-hover">
         <thead>
           <tr class="table_tit">
-            <th><input type="checkbox" class="checkAll" rel="item" name="allbox" />
-              选项</th>
+            <th>选项</th>
             <th>ID</th>
             <th>考试名称</th>
             <th>状态</th>
@@ -27,27 +26,29 @@
         </thead>
         <tbody>
           <tr v-for="(item, index) of lists">
-            <td><input type="radio" name="s" :value="item.examinationId" v-model="examinationId" class="child_item" @click="setIndex(index)"/></td>
+            <td>
+              <input type="radio" name="s" :value="item.examinationId" v-model="examinationId" class="child_item" @click="setIndex(index)"/>
+            </td>
             <td>{{item.examinationId}}</td>
             <td>{{item.name}}</td>
-            <td class="green">{{item.state}}</td>
+            <td class="green">{{status[item.state]}}</td>
             <td @click="examineeSearch(1, item.examinationId)"><a class="color_qf" data-toggle="modal" data-target="#myModal">{{item.number}}</a></td>
             <td>{{item.createTime}}</td>
             <td class="gc_list">
-              <a @click="openExam(item)">开启</a>
-              <a @click="closeExam(item)">关闭</a>
-              <router-link :to="'/exam/edit/' + item.examinationId">编辑</router-link>
-              <a @click="deleteExam(item, index)">删除</a>
+              <a @click="openExam(item)" v-if="item.state === 'wait'">开启</a>
+              <a @click="closeExam(item)" v-if="item.state === 'wait' || item.state === 'done'">关闭</a>
+              <router-link :to="'/exam/edit/' + item.examinationId" v-if="item.state === 'wait'">编辑</router-link>
+              <a @click="deleteExam(item, index)" v-if="item.state === 'wait' || item.state === 'done' || item.state === 'checked'">删除</a>
             </td>
           </tr>
         </tbody>
       </table>
       <div class="index_table_btn">
-        <button class="btn color_qf" data-toggle="modal" data-target="#myModal1" @click="initSend">发送</button>
-        <button class="btn color_qf" data-toggle="modal" data-target="#myModal2" @click="initTimeExam">设置时长</button>
-        <a class="btn color_qf" :href="download + examinationId">下载数据</a>
+        <button class="btn color_qf" v-if="selectState === 'doing'" data-toggle="modal" data-target="#myModal1" @click="initSend">发送</button>
+        <button class="btn color_qf" v-if="selectState === 'wait'" data-toggle="modal" data-target="#myModal2" @click="initTimeExam">设置时长</button>
+        <a class="btn color_qf" v-if="selectState !== 'wait'" :href="download + examinationId">下载数据</a>
         <button class="btn color_qf" @click="copyExam">复制试题</button>
-        <button class="btn color_qf" data-toggle="modal" data-target="#myModal3" @click="initTargetExam">考试对象</button>
+        <button class="btn color_qf" v-if="selectState === 'wait'" data-toggle="modal" data-target="#myModal3" @click="initTargetExam">考试对象</button>
       </div>
       <v-pagination :page="pages" @nextPage="search"></v-pagination>
     </div>
@@ -60,7 +61,8 @@
         <h4 class="modal-title text-center" id="myModalLabel"> 答卷 </h4>
       </div>
       <div class="modal-body">
-        <div class="index_table_cont">
+        <span v-if="examineeLists.length === 0">无提交答卷</span>
+        <div class="index_table_cont" v-if="examineeLists.length > 0">
           <table class="table table-hover">
             <thead>
               <tr class="table_tit">
@@ -95,13 +97,14 @@
       <div class="modal-body">
         <div class="index_table_cont">
           <div class="table_cont_top">
-            <div class="fs_ewm"><img :src="qrCode + examinationId" /></div>
+            <div class="fs_ewm"><img :src="qrCode" /></div>
             <div class="fs_ewm"><a :href="downloadqrcode + examinationId" class="btn btn_search">下载二维码</a></div>
             <div style="clear:both;"></div>
           </div>
           <div class="text-center"><img :src="ffx" /></div>
-          <div class="table_cont_bottom"> <span id="con_url">{{url}}</span>
-            <button id="copyBT" class="btn btn_fz">复制链接</button>
+          <div class="table_cont_bottom"> 
+            <input id="con_url" style="width: 300px" type="text" :value="url" readonly></input>
+            <button id="copyBT" class="btn btn_fz pull-right" @click="copyUrl">复制链接</button>
             <div style="clear:both;"></div>
           </div>
         </div>
@@ -131,7 +134,7 @@
             </div>
             <div class="form-group">
               <label for="">设置时长</label>
-              <input type="text" placeholder="请输入考试分钟数" v-model="duration">
+              <input type="text" placeholder="请输入考试分钟数" v-model="duration">分钟
               <p class="mrts">默认考试时间为90分钟</p>
             </div>
             <button class="btn btn_search" type="button" @click="setTimeExam" data-dismiss="modal" aria-label="Close">确认</button>
@@ -174,7 +177,6 @@
             </div>
             <button class="btn btn_search" type="button" @click="setTargetExam" data-dismiss="modal" aria-label="Close">确认</button>
           </form>
-          
         </div>
       </div>
     </div>
@@ -195,7 +197,7 @@ PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONURL, PLATFORM_POST_EXAMS_EXAMINEE_TIMESE
 PLATFORM_POST_EXAMS_EXAMINEE_OBJECTSETTING, PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADEXCEL,
 PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADQRCODE } from '@/config/env';
 import { formatDate } from '@/config/utils';
-import { DatePicker, Checkbox, CheckboxGroup, Input } from 'element-ui';
+import { DatePicker, Checkbox, CheckboxGroup, Input, MessageBox } from 'element-ui';
 
 export default {
   data() {
@@ -206,7 +208,7 @@ export default {
       name,
       ffx,
       page: 1,
-      rows: 2,
+      rows: 10,
       pages: 0,
       examTime: '',
       examineePage: 1,
@@ -219,16 +221,17 @@ export default {
       examName: '',
       duration: '',
       rules: [],
-      url: '',
-      qrCode: PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONIMAGE,
+      url: null,
+      qrCode: null,
       download: PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADEXCEL,
       downloadqrcode: PLATFORM_POST_EXAMS_EXAMINEE_DOWNLOADQRCODE,
+      selectState: '',
       status: {
         wait: '待考试',
         doing: '正在考试',
         done: '考试结束',
         checked: '试卷审查完毕',
-        close: '关闭',
+        closed: '关闭',
         deleted: '删除',
       },
     };
@@ -244,20 +247,29 @@ export default {
     async openExam(obj) {
       const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_EXAMINEE_ENTRANCE}${obj.examinationId}`);
       if (res.data.code === 0) {
-        obj.state = this.status[res.data.data];
+        obj.state = res.data.data;
       }
     },
     async closeExam(obj) {
       const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_EXAMINEE_CLOSEORDELETE}${obj.examinationId}/closed`);
       if (res.data.code === 0) {
-        obj.state = this.status[res.data.data];
+        obj.state = res.data.data;
       }
     },
     async deleteExam(obj, index) {
-      const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_EXAMINEE_CLOSEORDELETE}${obj.examinationId}/deleted`);
-      if (res.data.code === 0) {
-        this.lists.splice(index, 1);
-      }
+      MessageBox({
+        title: '提示',
+        message: '此操作将永久删除该数据, 是否继续?',
+        showCancelButton: true,
+        showConfirmButton: true,
+        type: 'warning',
+      }).then(async () => {
+        const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_EXAMINEE_CLOSEORDELETE}${obj.examinationId}/deleted`);
+        if (res.data.code === 0) {
+          this.lists.splice(index, 1);
+        }
+      }).catch(() => {
+      });
     },
     async copyExam() {
       const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_EXAMINEE_COPYING}${this.examinationId}`);
@@ -266,10 +278,16 @@ export default {
       }
     },
     async initSend() {
+      this.qrCode = `${PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONIMAGE}${this.examinationId}`;
       const res = await this.$xhr('get', `${PLATFORM_POST_EXAMS_EXAMINEE_PUBLICATIONURL}${this.examinationId}`);
       if (res.data.code === 0) {
         this.url = res.data.data;
       }
+    },
+    copyUrl() {
+      document.getElementById('con_url').focus();
+      document.getElementById('con_url').select();
+      document.execCommand('copy', false, null);
     },
     initTimeExam() {
       const item = this.lists[this.index];
@@ -278,6 +296,7 @@ export default {
     },
     setIndex(index) {
       this.index = index;
+      this.selectState = this.lists[index].state;
     },
     async setTimeExam() {
       const param = {};
@@ -340,8 +359,10 @@ export default {
       const res = await this.$xhr('get', PLATFORM_GET_EXAMS_LISTING, param);
       if (res.data.code === 0) {
         this.lists = res.data.data;
-        this.lists.forEach((o) => {
-          o.state = this.status[o.state];
+        this.lists.forEach((o, i) => {
+          if (i === 0) {
+            this.examinationId = o.examinationId;
+          }
           o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd');
         });
       }

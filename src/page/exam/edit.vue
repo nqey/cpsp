@@ -164,7 +164,7 @@
                     <h5 class="pull-left">标题</h5> 
                     <!-- <a class="pull-right">插入图片或视频</a>  -->
                   </div> 
-                  <textarea title="" class="inputtext" v-model="title" placeholder="请选择您认为正确的答案"></textarea> 
+                  <textarea title="" class="inputtext" v-model="title" placeholder="请设置标题"></textarea> 
                 </div> 
               </div> 
             </div> 
@@ -207,7 +207,7 @@
                   </tbody> 
                 </table> 
                 <div class="clearfix dajx"> 
-                  <div class="col-md-4"> 
+                  <div class="col-md-6"> 
                     <label for="">题目分数</label> 
                     <select v-model="score">
                       <option v-for="v of scores">{{v}}</option>
@@ -216,7 +216,13 @@
                 </div> 
               </div> 
             </div> 
-            <button class="btn wcbj" data-event="reject" data-toggle="modal" data-target="#myModal" @click="finish">完成编辑</button> 
+            <div style="position: absolute;top: -35px;width: 95%;" class="alert alert-danger" role="alert" v-if="errMsg.length > 0">
+              <div v-for="e of errMsg">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>{{e}}
+              </div>
+            </div>
+            <button class="btn wcbj" data-event="reject"  @click="finish">完成编辑</button> 
           </div> 
         </div> 
       </div> 
@@ -314,6 +320,8 @@ export default {
       image: '',
       score: 5,
       scores: [5, 8, 10],
+      errMsg: [],
+      timer: null,
     };
   },
   methods: {
@@ -326,6 +334,10 @@ export default {
       this.options.push(option);
     },
     delOption(index) {
+      if (this.options.length === 1) return;
+      if (index === this.answer - 0) {
+        this.answer = '';
+      }
       this.options.splice(index, 1);
     },
     downMove(index) {
@@ -333,12 +345,22 @@ export default {
       const a = this.options[index + 1];
       const b = this.options[index];
       this.options.splice(index, 2, ...[a, b]);
+      if (index === this.answer - 0) {
+        this.answer = index + 1;
+      } else if (index === this.answer - 1) {
+        this.answer = index;
+      }
     },
     upMove(index) {
       if (index === 0) return;
       const a = this.options[index];
       const b = this.options[index - 1];
       this.options.splice(index - 1, 2, ...[a, b]);
+      if (index === (this.answer - 0)) {
+        this.answer = index - 1;
+      } else if (index === (this.answer - 0 + 1)) {
+        this.answer = index;
+      }
     },
     edit(type) {
       if (type === 'single') {
@@ -346,50 +368,103 @@ export default {
         q.title = this.title;
         q.score = this.score;
         q.answer = this.answer;
+        if (!q.title) {
+          this.errMsg.push('请设置标题');
+        }
+        q.options.forEach((d, index) => {
+          if (!d.option) {
+            this.errMsg.push(`请设置第${index + 1}行选项文字`);
+          }
+        });
+        if (q.answer === '') {
+          this.errMsg.push('请设置正确答案');
+        }
       } else if (type === 'multiple') {
         const q = this.multipleQS[this.multipleQI];
         q.title = this.title;
         q.score = this.score;
         q.answer = [];
+        if (!q.title) {
+          this.errMsg.push('请设置标题');
+        }
         this.options.forEach((d, index) => {
           if (d.answer) {
             q.answer.push(index);
           }
+          if (!d.option) {
+            this.errMsg.push(`请设置第${index + 1}行选项文字`);
+          }
         });
+        if (q.answer.length === 0) {
+          this.errMsg.push('请设置正确答案');
+        }
       } else if (type === 'essay') {
         const q = this.essayQS[this.essayQI];
         q.title = this.title;
         q.score = this.score;
+        if (!q.title) {
+          this.errMsg.push('请设置标题');
+        }
       }
+      if (this.errMsg.length > 0) return;
+      this.jQuery('#myModal').modal('hide');
     },
     insert(type) {
       const question = {};
       question.title = this.title;
       question.score = this.score;
       question.type = this.type;
+      if (!question.title) {
+        this.errMsg.push('请设置标题');
+      }
       if (type === 'single') {
         question.answer = this.answer;
         question.options = this.options;
-        this.singleQS.push(question);
+        question.options.forEach((d, index) => {
+          if (!d.option) {
+            this.errMsg.push(`请设置第${index + 1}行选项文字`);
+          }
+        });
+        if (question.answer === '') {
+          this.errMsg.push('请设置正确答案');
+        }
+        if (this.errMsg.length === 0) {
+          this.singleQS.push(question);
+        }
       } else if (type === 'multiple') {
         question.answer = [];
         this.options.forEach((d, index) => {
           if (d.answer) {
             question.answer.push(index);
           }
+          if (!d.option) {
+            this.errMsg.push(`请设置第${index + 1}行选项文字`);
+          }
         });
         question.options = this.options;
-        this.multipleQS.push(question);
+        if (question.answer.length === 0) {
+          this.errMsg.push('请设置正确答案');
+        }
+        if (this.errMsg.length === 0) {
+          this.multipleQS.push(question);
+        }
       } else if (type === 'essay') {
-        this.essayQS.push(question);
+        if (this.errMsg.length === 0) {
+          this.essayQS.push(question);
+        }
       }
+      if (this.errMsg.length > 0) return;
+      this.jQuery('#myModal').modal('hide');
     },
     finish() {
+      this.errMsg = [];
       if (this.insOrEdi === 'edit') {
         this.edit(this.type);
       } else if (this.insOrEdi === 'insert') {
         this.insert(this.type);
       }
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => { this.errMsg = []; }, 2000);
     },
     insertToHtml(type) {
       this.options = [];

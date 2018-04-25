@@ -40,6 +40,7 @@
             <el-button type="primary" @click="search(1, 2)">搜索</el-button>
           </form>
         </div>
+        <span v-if="lists.length === 0">无数据</span>
         <div v-show="lists.length > 0">
           <table class="table table-hover">
             <thead>
@@ -55,7 +56,7 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) of lists">
-                <td><b>{{index + 1}}</b></td>
+                <td><b>{{item.id}}</b></td>
                 <td>{{item.name}}</td>
                 <td>{{item.organizName}}</td>
                 <td>{{item.declarerName}}</td>
