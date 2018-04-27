@@ -13,10 +13,11 @@ const examView = r => require.ensure([], (require) => { r(require('@/page/exam/v
 const examList = r => require.ensure([], (require) => { r(require('@/page/exam/list')); }, 'examList');
 const examNew = r => require.ensure([], (require) => { r(require('@/page/exam/new')); }, 'examNew');
 const examDetail = r => require.ensure([], (require) => { r(require('@/page/exam/detail')); }, 'examDetail');
+const system = r => require.ensure([], (require) => { r(require('@/page/system')); }, 'system');
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/agencymgt/list',
@@ -74,9 +75,26 @@ export default new Router({
       component: examDetail,
     },
     {
+      path: '/system',
+      name: 'system',
+      component: system,
+    },
+    {
       path: '/login',
       name: 'login',
       component: login,
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/') {
+    next({
+      path: '/login',
+    });
+  } else {
+    next();
+  }
+});
+
+export default router;

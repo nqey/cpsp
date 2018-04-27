@@ -171,7 +171,7 @@ export default {
         waitPending: ['申报企业待初审', 'base'],
         waitUnPending: ['初审未通过', 'pass'],
         waitPended: ['初审通过', 'pass'],
-        waitAudit: ['待审核', 'base'],
+        waitAudit: ['待审核', 'baseWait'],
         unPass: ['未通过', 'pass'],
         pass: ['已通过', 'pass'],
         wait: ['待支付', 'pass'],

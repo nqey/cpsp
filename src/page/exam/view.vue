@@ -46,7 +46,7 @@
                   <span class="number">{{index+1}}、</span>{{e.title}}<span class="req">&nbsp;*（分值：{{e.score}}分）</span>
                 </div>
               </div>
-              <textarea title="" class="inputtext inputtext_ck" placeholder="请输入您的答案 "></textarea>
+              <textarea title="" class="inputtext inputtext_ck" placeholder="请输入您的答案 " disabled></textarea>
             </div>
           </div>
         </fieldset>

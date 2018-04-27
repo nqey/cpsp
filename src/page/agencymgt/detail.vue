@@ -150,8 +150,9 @@
 import backicon from '@/assets/img/back_icon.png';
 import vimg from '@/components/img/img';
 import { formatDate } from '@/config/utils';
-import { PLATFORM_GET_ORGANIZ, PLATFORM_POST_ORGANIZ_BASEWAITAUDIT, PLATFORM_PUT_ORGANIZ_BASEAUDIT,
- PLATFORM_POST_ORGANIZ_REGISTWAITAUDIT, PLATFORM_PUT_ORGANIZ_REGISTAUDIT, IMAGE_SERVER_URL } from '@/config/env';
+import { PLATFORM_GET_ORGANIZ, PLATFORM_POST_ORGANIZ_BASEWAITAUDIT,
+PLATFORM_PUT_ORGANIZ_BASEAUDIT, PLATFORM_POST_ORGANIZ_REGISTWAITAUDIT,
+PLATFORM_PUT_ORGANIZ_REGISTAUDIT, IMAGE_SERVER_URL } from '@/config/env';
 
 export default {
   name: 'detail',
@@ -186,14 +187,14 @@ export default {
       backicon,
       status: {
         baseWaitSubmit: ['基本信息待填写', 'pass'],
-        baseWaitPending: ['基本信息待初审', 'baseWait'],
+        baseWaitPending: ['基本信息待初审', 'base'],
         baseWaitUnPending: ['基本信息初审未通过', 'pass'],
         baseWaitPended: ['基本信息初审通过', 'pass'],
         baseWaitAudit: ['基本信息待审核', 'baseWait'],
         baseUnPass: ['基本信息未通过', 'pass'],
         basePass: ['基本信息通过', 'pass'],
         registWaitSubmit: ['登记信息待填写', 'pass'],
-        registWaitPending: ['登记信息待初审', 'registWait'],
+        registWaitPending: ['登记信息待初审', 'regist'],
         registWaitUnPending: ['登记信息初审未通过', 'pass'],
         registWaitPended: ['登记信息初审通过', 'pass'],
         registWaitAudit: ['登记信息待审核', 'registWait'],

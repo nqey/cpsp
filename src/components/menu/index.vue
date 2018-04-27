@@ -63,10 +63,10 @@ export default {
           active: false,
         },
         XXXX: {
-          title: '网站管理',
+          title: '系统公告',
           icon: icon4,
           icon2: icon44,
-          link: '/XXXX',
+          link: '/system',
           active: false,
         },
         exam: {

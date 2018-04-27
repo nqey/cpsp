@@ -1,34 +1,30 @@
 const test = (() => {
   if (/cpsdb61.com/.test(window.location.hostname) || /test.com/.test(window.location.hostname)) {
-    return 'online';
+    return 'test';
   } else if (/cpsdb.com/.test(window.location.hostname)) {
     return 'online';
   }
-  return 'online';
+  return 'local';
 })();
 const LOCAL_URL = '.test.com';
 const ENTERPRISE_BASE_URL = (() => {
   switch (test) {
     case 'test':
-      return '//ep.lh-xm.com/';
-    case 'online':
       return '//ep.cpsdb61.com/';
+    case 'online':
+      return '//ep.cpsdb.com/';
     default :
-      return location.hostname.indexOf(LOCAL_URL) >= 0
-        ? `//cps${LOCAL_URL}/enterprise/`
-        : `//${location.hostname}:8080/enterprise/`;
+      return location.hostname;
   }
 })();
 const BASE_URL = (() => {
   switch (test) {
     case 'test':
-      return '//base.cpsdb.com/';
-    case 'online':
       return '//base.cpsdb61.com/';
+    case 'online':
+      return '//base.cpsdb.com/';
     default :
-      return location.hostname.indexOf(LOCAL_URL) >= 0
-        ? `//cps${LOCAL_URL}/enterprise/`
-        : `//${location.hostname}:8080/enterprise/`;
+      return location.hostname;
   }
 })();
 const EXAM_BASE_URL = (() => {
@@ -36,39 +32,37 @@ const EXAM_BASE_URL = (() => {
     case 'test':
       return '//exam.cpsdb61.com/';
     case 'online':
-      return '//exam.cpsdb61.com/';
+      return '//exam.cpsdb.com/';
     default :
-      return '//exam.cpsdb61.com/';
+      return location.hostname;
   }
 })();
 const DECLARE_BASE_URL = (() => {
   switch (test) {
     case 'test':
-      return '//dec.lh-xm.com/';
-    case 'online':
       return '//dec.cpsdb61.com/';
+    case 'online':
+      return '//dec.cpsdb.com/';
     default :
-      return location.hostname.indexOf(LOCAL_URL) >= 0
-        ? `//cps${LOCAL_URL}/declare/`
-        : `//${location.hostname}:8080/declare/`;
+      return location.hostname;
   }
 })();
 const IMAGE_SERVER_URL = (() => {
   switch (test) {
     case 'test':
-      return '//pic.lh-xm.com/';
-    case 'online':
       return '//pic.cpsdb61.com/';
+    case 'online':
+      return '//pic.cpsdb.com/';
     default :
-      return '//192.168.1.47:9000/';
+      return location.hostname;
   }
 })();
 const DOMAIN = (() => {
   switch (test) {
     case 'test':
-      return 'lh-xm.com';
-    case 'online':
       return 'cpsdb61.com';
+    case 'online':
+      return 'cpsdb.com';
     default :
       return location.hostname.indexOf(LOCAL_URL) >= 0 ? LOCAL_URL : location.hostname;
   }
@@ -78,10 +72,8 @@ const ENTERPRISE_TYPE = {
   pending: '待初审',
   collectting: '待认证官上门采集',
   confirmFailed: '初审未通过',
-
   pending2: '待复审',
   confirm2Failed: '复审未通过',
-
   passed: '通过审核',
 };
 
@@ -267,6 +259,8 @@ const PUBLICS_GET_NOTICES_DETAILS = `${DECLARE_BASE_URL}/publics/notices/details
 const PUBLICS_GET_NOTICES_LISTING = `${DECLARE_BASE_URL}/publics/notices/listing`;
 // 动态条件查询下的系统公告的分页内容列表
 const PUBLICS_GET_NOTICES_COUNTS = `${DECLARE_BASE_URL}/publics/notices/counts`;
+// 添加系统通告
+const PUBLICS_GET_NOTICES_ADDITIONS = `${DECLARE_BASE_URL}/platform/notices/additions`;
 
 export {
   test,
@@ -365,4 +359,5 @@ export {
   DECLARE_DOWNLOAD_QCODE,
   PLATFORM_POST_EXAMS_EXAMINEE_DETAILS,
   PLATFORM_POST_EXAMS_EXAMINEE_SCORES,
+  PUBLICS_GET_NOTICES_ADDITIONS,
 };

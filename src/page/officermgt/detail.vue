@@ -118,7 +118,9 @@
 import backicon from '@/assets/img/back_icon.png';
 import vimg from '@/components/img/img';
 import { formatDate } from '@/config/utils';
-import { PLATFORM_GET_DECLARER, PLATFORM_PUT_DECLARER_AUDIT, PLATFORM_PUT_DECLARER_WAITAUDIT, IMAGE_SERVER_URL, DECLARE_QCODE, DECLARE_DOWNLOAD_QCODE } from '@/config/env';
+import { PLATFORM_GET_DECLARER, PLATFORM_PUT_DECLARER_AUDIT,
+PLATFORM_PUT_DECLARER_WAITAUDIT, IMAGE_SERVER_URL,
+DECLARE_QCODE, DECLARE_DOWNLOAD_QCODE } from '@/config/env';
 
 export default {
   name: 'detail',

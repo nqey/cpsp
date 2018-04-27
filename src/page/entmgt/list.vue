@@ -96,62 +96,21 @@ export default {
       state: '',
       status: {
         '': '请选择',
-        waitPending: '申报企业待初审',
-        waitUnPending: '初审未通过',
-        waitPended: '初审通过',
-        waitAudit: '待审核',
-        unPass: '未通过',
-        pass: '已通过',
-        pending: '企业入库待初审',
+        waitPending: '申报材料待初审',
+        waitUnPending: '申报材料初审未通过',
+        waitPended: '申报材料初审通过',
+        waitAudit: '申报材料待复审',
+        unPass: '申报材料复审未通过',
+        pass: '申报材料复审已通过',
+        wait: '系统服务费待支付',
+        pending: '入库材料待初审',
         collectting: '待认证官上门采集',
-        confirmFailed: '初审未通过',
-        reject2: '认证官采集未通过',
-        pending2: '待复审',
-        confirm2Failed: '复审未通过',
-        passed: '通过审核',
+        confirmFailed: '入库材料初审未通过',
+        reject2: '认证官采集未完成',
+        pending2: '认证材料待复审',
+        confirm2Failed: '认证材料复审未通过',
+        passed: '认证材料复审已通过',
       },
-      options: [
-        {
-          value: 'waitPending',
-          label: '申报企业待初审',
-        }, {
-          value: 'waitUnPending',
-          label: '初审未通过',
-        }, {
-          value: 'waitPended',
-          label: '初审通过',
-        }, {
-          value: 'waitAudit',
-          label: '待审核',
-        }, {
-          value: 'unPass',
-          label: '未通过',
-        }, {
-          value: 'pass',
-          label: '已通过',
-        }, {
-          value: 'pending',
-          label: '企业入库待初审',
-        }, {
-          value: 'collectting',
-          label: '待认证官上门采集',
-        }, {
-          value: 'confirmFailed',
-          label: '初审未通过',
-        }, {
-          value: 'reject2',
-          label: '认证官采集未通过',
-        }, {
-          value: 'pending2',
-          label: '待复审',
-        }, {
-          value: 'confirm2Failed',
-          label: '复审未通过',
-        }, {
-          value: 'passed',
-          label: '通过审核',
-        },
-      ],
     };
   },
   methods: {
