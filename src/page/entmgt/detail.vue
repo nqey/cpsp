@@ -4,6 +4,9 @@
       <div class="index_table_tit clearfix">
         <router-link class="btn back_icon" to="/entmgt/list"><img :src="backicon" />返回</router-link>
       </div>
+      <div v-if="reason" style="text-align: center;color: red;">
+        <span class="glyphicon glyphicon-exclamation-sign"></span> <span style="position: relative;top:-1px;">{{reason}}</span>
+      </div> 
       <div class="index_table index_table_con clearfix">
         <div class="col-md-10 col-md-offset-1">
           <div class="form-group clearfix">
@@ -61,6 +64,14 @@
             <div class="content_left"><b>资金补贴申请表</b></div>
             <div class="content_right">
               <div class="pull-left" v-for="url of capitalImageUrl">
+                <v-img :imgSrc="url"></v-img>
+              </div>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <div class="content_left"><b>企业尽职调查表</b></div>
+            <div class="content_right">
+              <div class="pull-left" v-for="url of enterpriseSurveyImageUrl">
                 <v-img :imgSrc="url"></v-img>
               </div>
             </div>
@@ -225,9 +236,10 @@ export default {
         if (res.data.data.otherImageUrl) {
           this.otherImageUrl = res.data.data.otherImageUrl.split(',');
         }
-        this.createTime = formatDate(new Date(res.data.data.createTime), 'yyyy-MM-dd');
-        this.registerTime = formatDate(new Date(res.data.data.registerTime), 'yyyy-MM-dd');
+        this.createTime = formatDate(new Date(res.data.data.createTime), 'yyyy-MM-dd hh:mm:ss');
+        this.registerTime = formatDate(new Date(res.data.data.registerTime), 'yyyy-MM-dd hh:mm:ss');
         this.state = res.data.data.state;
+        this.reason = res.data.data.reason;
         this.statusNm = this.status[this.state][0];
         if (this.status[this.state][1] === 'pass') {
           this.isShowStatus = false;

@@ -10,6 +10,9 @@
           </ul>
         </div>
       </div>
+      <div v-if="reason" style="text-align: center;color: red;">
+        <span class="glyphicon glyphicon-exclamation-sign"></span> <span style="position: relative;top:-1px;">{{reason}}</span>
+      </div> 
       <div class="index_table index_table_con clearfix">
         <div class="col-md-10 col-md-offset-1"> 
           <!-- Tab panes -->
@@ -80,14 +83,14 @@
                   </div>
                 </div>
               </div>
-              <div class="form-group clearfix">
+            <!--   <div class="form-group clearfix">
                 <div class="content_left"><b>负责人承诺公函</b></div>
                 <div class="content_right clearfix">
                   <div class="pull-left" v-for="url of chargerImageUrl">
                     <v-img :imgSrc="url"></v-img>
                   </div>
                 </div>
-              </div>
+              </div> -->
               <div class="form-group clearfix">
                 <div class="content_left"><b>企业工商营业执照</b></div>
                 <div class="content_right clearfix" v-if="commerceImageUrl">
@@ -213,7 +216,7 @@ export default {
       if (res.data.success) {
         this.obj = res.data.data;
         this.address = res.data.data.address;
-        this.baseTime = formatDate(new Date(res.data.data.baseTime), 'yyyy-MM-dd');
+        this.baseTime = formatDate(new Date(res.data.data.baseTime), 'yyyy-MM-dd hh:mm:ss');
         this.cellphone = res.data.data.cellphone;
         this.createTime = res.data.data.createTime;
         this.idBackUrl = res.data.data.idBackUrl;
@@ -241,8 +244,9 @@ export default {
         if (res.data.data.otherImageUrl) {
           this.otherImageUrl = res.data.data.otherImageUrl.split(',');
         }
-        this.registTime = formatDate(new Date(res.data.data.registTime), 'yyyy-MM-dd');
+        this.registTime = formatDate(new Date(res.data.data.registTime), 'yyyy-MM-dd hh:mm:ss');
         this.state = res.data.data.state;
+        this.reason = res.data.data.reason;
         this.statusNm = this.status[this.state][0];
         if (this.status[this.state][1] === 'pass') {
           this.isShowStatus = false;

@@ -77,6 +77,12 @@ const ENTERPRISE_TYPE = {
   passed: '通过审核',
 };
 
+const TRAFFIC_LIGHT = {
+  red: 'color: red',
+  yellow: 'color: #ec971f',
+  green: 'color: #5cb85c',
+};
+
 // api
 // 获取二维码
 const DECLARE_QCODE = `${DECLARE_BASE_URL}publics/qcode.jpg`;
@@ -360,4 +366,5 @@ export {
   PLATFORM_POST_EXAMS_EXAMINEE_DETAILS,
   PLATFORM_POST_EXAMS_EXAMINEE_SCORES,
   PUBLICS_GET_NOTICES_ADDITIONS,
+  TRAFFIC_LIGHT,
 };

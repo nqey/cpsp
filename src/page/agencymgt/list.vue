@@ -37,7 +37,9 @@
                 </el-option>
               </el-select>
             </div>
-            <el-button type="primary" @click="search(1, 2)">搜索</el-button>
+            <div class="form-group">
+            <el-button type="primary" @click="search(1, 2)" style="margin-bottom: -5px;">搜索</el-button>
+          </div>
           </form>
         </div>
         <span v-if="lists.length === 0">无数据</span>
@@ -57,13 +59,15 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) of lists">
-                <td><b>{{item.id}}</b></td>
+                <td><b>{{item.snId}}</b></td>
                 <td>{{item.name}}</td>
                 <td>{{item.cellphone}}</td>
                 <td>{{item.recommentName}}</td>
                 <td>{{item.organizName}}</td>
                 <td>{{item.createTime}}</td>
-                <td>{{item.stateNm}}</td>
+                <td>
+                  <span :style="trafficLight[item.state]">{{item.stateNm}}</span>
+                </td>
                 <td class="gc_list">
                   <router-link v-if="item.state !== 'baseWaitSubmit'" :to="'/agencymgt/detail/' + item.id">查看详情</router-link>
                   <a v-if="item.state === '已删除'" @click="deleteAgency(item.id)">删除</a>
@@ -71,7 +75,7 @@
               </tr>
             </tbody>
           </table>
-          <v-pagination :page="pages" @nextPage="search"></v-pagination>
+          <v-pagination :page="pages" :total="count" @nextPage="search"></v-pagination>
         </div>
       </div>
     </div>
@@ -80,7 +84,7 @@
 
 <script>
 import pagination from '@/components/pagination';
-import { PLATFORM_GET_ORGANIZ_QUERY, PLATFORM_GET_ORGANIZ_COUNT, PLATFORM_DELETE_ORGANIZ } from '@/config/env';
+import { PLATFORM_GET_ORGANIZ_QUERY, PLATFORM_GET_ORGANIZ_COUNT, PLATFORM_DELETE_ORGANIZ, TRAFFIC_LIGHT } from '@/config/env';
 import { formatDate } from '@/config/utils';
 import { DatePicker, Input, Select, Option, Button, MessageBox } from 'element-ui';
 
@@ -97,6 +101,7 @@ export default {
       startTime: '',
       endTime: '',
       state: '',
+      count: 0,
       status: {
         '': '请选择',
         baseWaitSubmit: '基本信息待填写',
@@ -115,6 +120,24 @@ export default {
         registPass: '登记信息审核通过',
         delete: '已删除',
         passed: '通过审核',
+      },
+      trafficLight: {
+        baseWaitSubmit: TRAFFIC_LIGHT.yellow,
+        baseWaitPending: TRAFFIC_LIGHT.yellow,
+        baseWaitUnPending: TRAFFIC_LIGHT.red,
+        baseWaitPended: TRAFFIC_LIGHT.green,
+        baseWaitAudit: TRAFFIC_LIGHT.yellow,
+        baseUnPass: TRAFFIC_LIGHT.red,
+        basePass: TRAFFIC_LIGHT.green,
+        registWaitSubmit: TRAFFIC_LIGHT.yellow,
+        registWaitPending: TRAFFIC_LIGHT.yellow,
+        registWaitUnPending: TRAFFIC_LIGHT.red,
+        registWaitPended: TRAFFIC_LIGHT.green,
+        registWaitAudit: TRAFFIC_LIGHT.yellow,
+        registUnPass: TRAFFIC_LIGHT.red,
+        registPass: TRAFFIC_LIGHT.green,
+        delete: TRAFFIC_LIGHT.red,
+        passed: TRAFFIC_LIGHT.green,
       },
     };
   },
@@ -155,7 +178,7 @@ export default {
         this.lists.forEach((o) => {
           o.state = o.state;
           o.stateNm = this.status[o.state];
-          o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd');
+          o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd hh:mm:ss');
         });
       }
       const param2 = {};
@@ -174,6 +197,7 @@ export default {
       const res2 = await this.$xhr('get', PLATFORM_GET_ORGANIZ_COUNT, param2);
       if (res2.data.success) {
         this.pages = Math.ceil(res2.data.data / param.rows);
+        this.count = res2.data.data;
       }
     },
   },
@@ -217,7 +241,8 @@ export default {
   margin-bottom: 20px;
 }
 .index_table_search .form-group {
-  margin-right: 30px;
+  margin-right:20px;
+  margin-bottom: 15px;
 }
 .index_table_search input, .index_table_search select {
   padding: 5px 10px;

@@ -50,7 +50,7 @@
         <button class="btn color_qf" @click="copyExam">复制试题</button>
         <button class="btn color_qf" v-if="selectState === 'wait'" data-toggle="modal" data-target="#myModal3" @click="initTargetExam">考试对象</button>
       </div>
-      <v-pagination :page="pages" @nextPage="search"></v-pagination>
+      <v-pagination :page="pages" :total="count" @nextPage="search"></v-pagination>
     </div>
   </div>
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -81,7 +81,7 @@
               </tr>
             </tbody>
           </table>
-          <v-pagination :page="examineePages" @nextPage="examineeSearch"></v-pagination>
+          <v-pagination :page="examineePages" :total="examineeCount" @nextPage="examineeSearch"></v-pagination>
         </div>
       </div>
     </div>
@@ -220,6 +220,8 @@ export default {
       illustrate: '',
       examName: '',
       duration: '',
+      count: 0,
+      examineeCount: 0,
       rules: [],
       url: null,
       qrCode: null,
@@ -292,7 +294,7 @@ export default {
     initTimeExam() {
       const item = this.lists[this.index];
       this.duration = item.duration;
-      this.examTime = [formatDate(new Date(item.startTime), 'yyyy-MM-dd'), formatDate(new Date(item.endTime), 'yyyy-MM-dd')];
+      this.examTime = [formatDate(new Date(item.startTime), 'yyyy-MM-dd hh:mm:ss'), formatDate(new Date(item.endTime), 'yyyy-MM-dd hh:mm:ss')];
     },
     setIndex(index) {
       this.index = index;
@@ -312,7 +314,7 @@ export default {
     initTargetExam() {
       const item = this.lists[this.index];
       this.duration = item.duration;
-      this.objectTime = [formatDate(new Date(item.objectStartTime), 'yyyy-MM-dd'), formatDate(new Date(item.objectEndTime), 'yyyy-MM-dd')];
+      this.objectTime = [formatDate(new Date(item.objectStartTime), 'yyyy-MM-dd hh:mm:ss'), formatDate(new Date(item.objectEndTime), 'yyyy-MM-dd hh:mm:ss')];
       this.rules = item.rules.map((d) => {
         if (d === 1) {
           return '未参加考试';
@@ -363,14 +365,16 @@ export default {
           if (i === 0) {
             this.examinationId = o.examinationId;
           }
-          o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd');
+          o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd hh:mm:ss');
         });
+        this.selectState = this.lists[0].state;
       }
       const param2 = {};
       param2.name = this.name;
       const res2 = await this.$xhr('get', PLATFORM_GET_EXAMS_COUNTS, param2);
       if (res2.data.success) {
         this.pages = Math.ceil(res2.data.data / param.rows);
+        this.count = res2.data.data;
       }
     },
     async examineeSearch(page, id) {
@@ -395,6 +399,7 @@ export default {
       const res2 = await this.$xhr('get', `${PLATFORM_POST_EXAMS_EXAMINEE_COUNTS}${this.examinationId}`, param2);
       if (res2.data.success) {
         this.examineePages = Math.ceil(res2.data.data / this.examineeRows);
+        this.examineeCount = res2.data.data;
       }
     },
   },
@@ -590,7 +595,7 @@ export default {
   padding: 6px 40px;
   background: #4786ff;
   border-radius: 20px;
-  color: #fff;
+  color: #fff !important;
   margin-bottom: 20px;
 }
 .index_table_search .form-group {

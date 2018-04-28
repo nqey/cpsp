@@ -21,7 +21,7 @@
 <script>
 import tx from '@/assets/img/tx.png';
 import logo from '@/assets/img/small_logo.png';
-import { getCookie, delCookie } from '@/config/cookie';
+import { delCookie } from '@/config/cookie';
 
 export default {
   name: 'lheader',
@@ -29,12 +29,13 @@ export default {
     return {
       tx,
       logo,
-      name: getCookie('username'),
+      name: window.sessionStorage.getItem('username'),
     };
   },
   methods: {
     logout() {
-      delCookie('username');
+      window.sessionStorage.clear();
+      delCookie('platform_user');
       this.$router.push('/login');
     },
   },

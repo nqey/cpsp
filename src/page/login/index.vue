@@ -1,5 +1,6 @@
 <template>
   <div :style="{ background: 'url(' + zhs + ') no-repeat center / cover ' }">
+      <v-error-info :errMsg="errMsg"></v-error-info>
       <div class="wrap">
         <div style="text-align:center;"><img :src="logo" style="width:90%;margin-top: 5%;"> </div>
         <div class="js-ajax-form" id="login-form" style="margin-top: 10%;">
@@ -7,15 +8,15 @@
             <div class="login">
               <ul>
                 <li>
-                  <input class="input valid" name="username" type="text"  placeholder="用户名" title="用户名" v-model="username">
+                  <input class="input valid" name="username" type="text"  placeholder="用户名" title="用户名" v-model="username" @keypress="loginBefor($event)">
                 </li>
                 <li>
-                  <input class="input valid" name="password" type="password" placeholder="密码" title="密码" v-model="password">
+                  <input class="input valid" name="password" type="password" placeholder="密码" title="密码" v-model="password" @keypress="loginBefor($event)">
                 </li>
                 <li>
                   <ul class="logo_yzm">
                     <li>
-                      <input class="input" type="text" v-model="checknumber" name="checknumber" placeholder="请输入验证码">
+                      <input class="input" type="text" v-model="checknumber" name="checknumber" placeholder="请输入验证码" @keypress="loginBefor($event)">
                     </li>
                     <li class="verifycode-wrapper txr"><img :src="yzx" alt="点击更换验证码" width="112" height="45" @click="yzm"> </li>
                   </ul>
@@ -25,7 +26,7 @@
                 <button class="btn js-ajax-submit" @click="login">{{lo}}</button>
               </div>
             </div>
-          </div>
+          </div>  
         </div>
       </div>
   </div>
@@ -36,6 +37,7 @@ import { setCookie } from '@/config/cookie';
 import logo from '@/assets/img/ZHS-logo.png';
 import zhs from '@/assets/img/ZHS.png';
 import { CHECKNUMBER, DOMAIN, DECLARE_LOGIN_DO_ADDRESS } from '@/config/env';
+import errInfo from '@/components/info/error';
 
 export default {
   name: 'login',
@@ -45,13 +47,39 @@ export default {
       password: '',
       checknumber: '',
       lo: '登录',
+      errMsg: [],
       logo,
       yzx: `${CHECKNUMBER}${new Date().getTime()}&domain=${DOMAIN}`,
       zhs,
+      timer: null,
     };
   },
+  components: {
+    'v-error-info': errInfo,
+  },
   methods: {
+    loginBefor(e) {
+      if (e.keyCode === 13) {
+        this.login();
+      }
+    },
+    validate() {
+      this.errMsg = [];
+      if (!this.username) {
+        this.errMsg.push('请输入用户名！');
+      }
+      if (!this.password) {
+        this.errMsg.push('请输入密码！');
+      }
+      if (!this.checknumber) {
+        this.errMsg.push('请输入验证码！');
+      }
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => { this.errMsg = []; }, 2000);
+    },
     async login() {
+      this.validate();
+      if (this.errMsg.length !== 0) return;
       const data = {
         username: this.username,
         password: this.password,
@@ -60,7 +88,7 @@ export default {
       this.lo = '正在登录...';
       const res = await this.$xhr('post', DECLARE_LOGIN_DO_ADDRESS, data);
       if (res.data.code === 0) {
-        setCookie('username', this.username, 1000 * 60);
+        window.sessionStorage.setItem('username', this.username);
         setCookie('platform_user', res.data.data.token, 1000 * 60);
         this.$router.push('/agencymgt/list');
       } else {

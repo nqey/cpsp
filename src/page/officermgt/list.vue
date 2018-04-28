@@ -37,7 +37,9 @@
                 </el-option>
               </el-select>
             </div>
+            <div class="form-group">
             <el-button type="primary" @click="search(1, 2)">搜索</el-button>
+          </div>
           </form>
         </div>
         <span v-if="lists.length === 0">无数据</span>
@@ -58,13 +60,15 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) of lists">
-                <td><b>{{item.id}}</b></td>
+                <td><b>{{item.snId}}</b></td>
                 <td>{{item.name}}</td>
                 <td>{{item.cellphone}}</td>
                 <td>{{item.organizName}}</td>
                 <td>{{declareProduct[item.product]}}</td>
                 <td>{{item.createTime}}</td>
-                <td>{{item.state}}</td>
+                <td>
+                  <span :style="trafficLight[item.state]">{{status[item.state]}}</span>
+                </td>
                 <td>{{item.score === -1 ? '未考试' : item.score}}</td>
                 <td class="gc_list">
                   <router-link :to="'/officermgt/detail/' + item.id">查看详情</router-link>
@@ -73,7 +77,7 @@
               </tr>
             </tbody>
           </table>
-          <v-pagination :page="pages" @nextPage="search"></v-pagination>
+          <v-pagination :page="pages" :total="count" @nextPage="search"></v-pagination>
         </div>
       </div>
     </div>
@@ -82,7 +86,7 @@
 
 <script>
 import pagination from '@/components/pagination';
-import { PLATFORM_GET_DECLARER_QUERY, PLATFORM_GET_DECLARER_COUNT, PLATFORM_DELETE_DECLARER } from '@/config/env';
+import { PLATFORM_GET_DECLARER_QUERY, PLATFORM_GET_DECLARER_COUNT, PLATFORM_DELETE_DECLARER, TRAFFIC_LIGHT } from '@/config/env';
 import { formatDate } from '@/config/utils';
 import { DatePicker, Input, Select, Option, Button, MessageBox } from 'element-ui';
 
@@ -99,6 +103,7 @@ export default {
       startTime: '',
       endTime: '',
       state: '',
+      count: 0,
       status: {
         '': '请选择',
         waitPending: '待初审',
@@ -107,6 +112,14 @@ export default {
         passed: '已通过',
         delete: '删除中',
         deleted: '已删除',
+      },
+      trafficLight: {
+        waitPending: TRAFFIC_LIGHT.yellow,
+        waitAudit: TRAFFIC_LIGHT.yellow,
+        unpass: TRAFFIC_LIGHT.red,
+        passed: TRAFFIC_LIGHT.green,
+        delete: TRAFFIC_LIGHT.red,
+        deleted: TRAFFIC_LIGHT.red,
       },
       declareProduct: {
         create: '创建',
@@ -149,8 +162,7 @@ export default {
       if (res.data.code === 0) {
         this.lists = res.data.data;
         this.lists.forEach((o) => {
-          o.state = this.status[o.state];
-          o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd');
+          o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd hh:mm:ss');
         });
       }
       const param2 = {};
@@ -169,6 +181,7 @@ export default {
       const res2 = await this.$xhr('get', PLATFORM_GET_DECLARER_COUNT, param2);
       if (res2.data.success) {
         this.pages = Math.ceil(res2.data.data / param.rows);
+        this.count = res2.data.data;
       }
     },
   },
@@ -212,7 +225,8 @@ export default {
   margin-bottom: 20px;
 }
 .index_table_search .form-group {
-  margin-right: 30px;
+ margin-right:20px;
+  margin-bottom: 15px;
 }
 .index_table_search input, .index_table_search select {
   padding: 5px 10px;

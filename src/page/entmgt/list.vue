@@ -37,7 +37,9 @@
                 </el-option>
               </el-select>
             </div>
+            <div class="form-group">
             <el-button type="primary" @click="search(1, 2)">搜索</el-button>
+            </div>
           </form>
         </div>
         <span v-if="lists.length === 0">无数据</span>
@@ -60,7 +62,9 @@
                 <td>{{item.name}}</td>
                 <td>{{item.organizName}}</td>
                 <td>{{item.declarerName}}</td>
-                <td>{{item.state}}</td>
+                <td>
+                  <span :style="trafficLight[item.state]">{{status[item.state]}}</span>
+                </td>
                 <td>{{item.createTime}}</td>
                 <td class="gc_list">
                   <router-link :to="'/entmgt/detail/' + item.id">查看详情</router-link>
@@ -68,7 +72,7 @@
               </tr>
             </tbody>
           </table>
-          <v-pagination :page="pages" @nextPage="search"></v-pagination>
+          <v-pagination :page="pages" :total="count" @nextPage="search"></v-pagination>
         </div>
       </div>
     </div>
@@ -77,7 +81,7 @@
 
 <script>
 import pagination from '@/components/pagination';
-import { PLATFORM_GET_DECLARER_ENTERPRISE_QUERY, PLATFORM_GET_DECLARER_ENTERPRISE_COUNT } from '@/config/env';
+import { PLATFORM_GET_DECLARER_ENTERPRISE_QUERY, PLATFORM_GET_DECLARER_ENTERPRISE_COUNT, TRAFFIC_LIGHT } from '@/config/env';
 import { formatDate } from '@/config/utils';
 import { DatePicker, Input, Select, Option, Button } from 'element-ui';
 
@@ -94,6 +98,7 @@ export default {
       startTime: '',
       endTime: '',
       state: '',
+      count: 0,
       status: {
         '': '请选择',
         waitPending: '申报材料待初审',
@@ -110,6 +115,22 @@ export default {
         pending2: '认证材料待复审',
         confirm2Failed: '认证材料复审未通过',
         passed: '认证材料复审已通过',
+      },
+      trafficLight: {
+        waitPending: TRAFFIC_LIGHT.yellow,
+        waitUnPending: TRAFFIC_LIGHT.red,
+        waitPended: TRAFFIC_LIGHT.green,
+        waitAudit: TRAFFIC_LIGHT.yellow,
+        unPass: TRAFFIC_LIGHT.red,
+        pass: TRAFFIC_LIGHT.green,
+        wait: TRAFFIC_LIGHT.yellow,
+        pending: TRAFFIC_LIGHT.yellow,
+        collectting: TRAFFIC_LIGHT.yellow,
+        confirmFailed: TRAFFIC_LIGHT.red,
+        reject2: TRAFFIC_LIGHT.red,
+        pending2: TRAFFIC_LIGHT.yellow,
+        confirm2Failed: TRAFFIC_LIGHT.red,
+        passed: TRAFFIC_LIGHT.green,
       },
     };
   },
@@ -131,8 +152,8 @@ export default {
       if (res.data.code === 0) {
         this.lists = res.data.data;
         this.lists.forEach((o) => {
-          o.state = this.status[o.state];
-          o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd');
+          // o.state = this.status[o.state];
+          o.createTime = formatDate(new Date(o.createTime), 'yyyy-MM-dd hh:mm:ss');
         });
       }
       const param2 = {};
@@ -151,6 +172,7 @@ export default {
       const res2 = await this.$xhr('get', PLATFORM_GET_DECLARER_ENTERPRISE_COUNT, param2);
       if (res2.data.success) {
         this.pages = Math.ceil(res2.data.data / param.rows);
+        this.count = res2.data.data;
       }
     },
   },
@@ -194,7 +216,8 @@ export default {
   margin-bottom: 20px;
 }
 .index_table_search .form-group {
-  margin-right: 30px;
+  margin-right:20px;
+  margin-bottom: 15px;
 }
 .index_table_search input, .index_table_search select {
   padding: 5px 10px;

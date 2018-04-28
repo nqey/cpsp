@@ -10,7 +10,7 @@
      <div class="col-md-8 col-md-offset-2">
       <h3 class="tit_bjks text-center">{{name}}</h3>
       <!-- <textarea title="" class="inputtext inputtext_1" placeholder="请输入考试说明"></textarea> -->
-      <span>{{illustrate}}</span>
+      <span class="inputtext_1">{{illustrate}}</span>
       <div class="cjst_btn">
        <ul>
         <li class="text-center btn_search" @click="insertToHtml('single')"><a data-toggle="modal" data-target="#myModal">插入单选题</a></li>
@@ -794,11 +794,18 @@ export default {
   margin-bottom: 40px;
 }
 .btn_search {
-  padding: 6px 40px;
   background: #4786ff;
   border-radius: 20px;
+  height: 35px;
+  line-height: 35px;
   color: #fff;
   margin-bottom: 20px;
+}
+.inputtext_1 {
+  display: block;
+  padding: 30px;
+    border: 1px solid #ddd;
+    min-height: 150px;
 }
 .index_table_search .form-group {
   margin-right: 30px;

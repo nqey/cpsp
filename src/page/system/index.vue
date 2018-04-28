@@ -89,7 +89,12 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../assets/css/mixin.scss';
-
+.index_table {
+  background: #fff;
+  padding: 40px;
+  border-radius: 4px 4px 0 0;
+  min-height: 600px;
+}
 .quill-editor {
   height: 445px;
   .ql-container {

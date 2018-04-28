@@ -120,6 +120,8 @@ export default {
       this.subjectId = id;
     },
     async init() {
+      this.selectTotalScroe = 0;
+      this.errQS = [];
       const res = await this.$xhr('get', `${PLATFORM_POST_EXAMS_EXAMINEE_DETAILS}${this.$route.params.id}`);
       if (res.data.code === 0) {
         const examineeAnswerMap = res.data.data.examineeAnswerMap;

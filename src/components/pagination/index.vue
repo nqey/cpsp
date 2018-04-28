@@ -1,5 +1,6 @@
 <template>
-  <nav class="txc">
+  <nav>
+    <span class="el-pagination__total" style="position: relative;top: -30px;width: 43%;display: inline-block;text-align: right;">共 {{total}} 条</span>
     <ul class="pagination">
       <li><span @click="prePage()">«</span></li>
       <li v-for="(p, i) in pages"><span :class="{active: p.isActive}" @click="setActive(p)">{{p.value}}</span></li>
@@ -12,7 +13,7 @@
 
 export default {
   name: 'pagenav',
-  props: ['page'],
+  props: ['page', 'total'],
   data() {
     return {
       pages: [],
