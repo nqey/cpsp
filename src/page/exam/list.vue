@@ -38,7 +38,7 @@
               <a @click="openExam(item)" v-if="item.state === 'wait'">开启</a>
               <a @click="closeExam(item)" v-if="item.state === 'wait' || item.state === 'done'">关闭</a>
               <router-link :to="'/exam/edit/' + item.examinationId" v-if="item.state === 'wait'">编辑</router-link>
-              <a @click="deleteExam(item, index)" v-if="item.state === 'wait' || item.state === 'done' || item.state === 'checked'">删除</a>
+              <a @click="deleteExam(item, index)" v-if="item.state === 'wait' || item.state === 'done' || item.state === 'closed'">删除</a>
             </td>
           </tr>
         </tbody>
@@ -69,6 +69,7 @@
                 <th>序号</th>
                 <th>姓名</th>
                 <th>交卷时间</th>
+                <th>状态</th>
                 <th>操作</th>
               </tr>
             </thead>
@@ -77,6 +78,7 @@
                 <td>{{item.examExamineeId}}</td>
                 <td>{{item.name}}</td>
                 <td>{{item.submitTime}}</td>
+                <td>{{status[item.state]}}</td>
                 <th class="gc_list" data-dismiss="modal" aria-label="Close"><router-link :to="'/exam/detail/'+item.examExamineeId">查看答卷</router-link></th>
               </tr>
             </tbody>

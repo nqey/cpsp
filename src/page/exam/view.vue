@@ -38,7 +38,36 @@
               </ul>
             </div>
           </div>
-          <div class="div_title_cut_question"><b>二、简答题</b></div>
+          <div class="div_title_cut_question"><b>二、判断题</b> </div>
+          <div class="div_question"> 
+            <div class="div_table_radio_question" v-for="(q, index) of judgeQS">
+              <div class="div_title_question_all">
+                <div class="div_title_question"><span class="number">{{index+1}}、</span>{{q.title}}( <span class="red">{{optionMap[q.answer]}}</span> )<span class="req">&nbsp;*（分值：{{q.score}}分）</span></div>
+              </div>
+              <ul class="ulradiocheck">
+                <li v-for="(o, oi) of q.options">
+                  <label class="radio-inline">
+                    <input type="radio" :value="oi" :name="'ju' + index" v-model="q.answer" disabled/>
+                    <b>{{optionMap[oi]}}、{{o.option}}</b>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="div_title_cut_question"><b>三、填空题</b></div>
+          <div class="div_question">
+            <div class="div_table_radio_question" v-for="(e, index) of fillQS">
+              <div class="div_title_question_all">
+                <div class="div_title_question">
+                  <span class="number">{{index+1}}、</span>{{e.title}}<span class="req">&nbsp;*（分值：{{e.score}}分）</span>
+                </div>
+              </div>
+              <div class="ulradiocheck">
+                <b class="req">正确答案:</b><input style="border: 0px;" type="text" disabled="disabled" :value="e.answer"></input>
+              </div>
+            </div>
+          </div>
+          <div class="div_title_cut_question"><b>四、简答题</b></div>
           <div class="div_question">
             <div class="div_table_radio_question" v-for="(e, index) of essayQS">
               <div class="div_title_question_all">
@@ -66,6 +95,8 @@ export default {
       singleQS: [],
       multipleQS: [],
       essayQS: [],
+      judgeQS: [],
+      fillQS: [],
       optionMap: [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
       ],
@@ -76,6 +107,8 @@ export default {
       if (window.sessionStorage.getItem('singleQS') !== 'undefined') this.singleQS = JSON.parse(window.sessionStorage.getItem('singleQS'));
       if (window.sessionStorage.getItem('multipleQS') !== 'undefined') this.multipleQS = JSON.parse(window.sessionStorage.getItem('multipleQS'));
       if (window.sessionStorage.getItem('essayQS') !== 'undefined') this.essayQS = JSON.parse(window.sessionStorage.getItem('essayQS'));
+      if (window.sessionStorage.getItem('judgeQS') !== 'undefined') this.judgeQS = JSON.parse(window.sessionStorage.getItem('judgeQS'));
+      if (window.sessionStorage.getItem('fillQS') !== 'undefined') this.fillQS = JSON.parse(window.sessionStorage.getItem('fillQS'));
     },
   },
   mounted() {

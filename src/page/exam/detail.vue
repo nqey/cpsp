@@ -41,7 +41,35 @@
                 <div class="ckkj_zq"><b>[正确答案]:<span v-for="k of item.correctAnswer">{{optionMap[k]}}&nbsp;</span></b></div>
               </div>
             </div>
-            <div class="div_title_cut_question"><b>二、简答题</b></div>
+            <div class="div_title_cut_question"><b>二、判断题</b> (得分<span class="green">{{this.judgeTotalScroe}}</span>分;错误题号<span class="red" v-for="e of errQSJudge">{{e}}题&nbsp;</span>)</div>
+            <div class="div_question"> 
+              <div class="div_table_radio_question" v-for="(item, index) of judgeQS">
+                <div class="div_title_question_all">
+                  <div class="div_title_question"><span class="number">{{item.subjectSort}}、</span>{{item.title}}( <span class="red">{{optionMap[item.examineeAnswer]}}</span> )<span class="req">&nbsp;*（分值：{{item.score}}分）</span></div>
+                </div>
+                <ul class="ulradiocheck">
+                  <li v-for="(o, oi) of item.options">
+                    <label class="radio-inline">
+                      <input type="radio" :value="oi" :name="'ju' + index" v-model="item.examineeAnswer" disabled/>
+                      <b>{{optionMap[oi]}}、{{o.option}}</b> </label>
+                  </li>
+                  <div class="ckkj_zq"><b>[正确答案]:<span>{{optionMap[item.correctAnswer]}}</span></b></div>
+                </ul>
+              </div>
+            </div>
+            <div class="div_title_cut_question"><b>三、填空题</b> (得分<span class="green">{{this.fillTotalScroe}}</span>分;错误题号<span class="red" v-for="e of errQSFill">{{e}}题&nbsp;</span>)</div>
+            <div class="div_question"> 
+              <div class="div_table_radio_question" v-for="(item, index) of fillQS">
+                <div class="div_title_question_all">
+                  <div class="div_title_question"><span class="number">{{item.subjectSort}}、</span>{{item.title}}<span class="req">&nbsp;*（分值：{{item.score}}分）</span>
+                  </div>
+                </div>
+                <!-- <input style="border: 0px;" type="text" disabled="disabled" :value="item.examineeAnswer"></input> -->
+                <div class="ckkj_zq"><b>[提交答案]:<span>{{item.examineeAnswer}}</span></b></div>
+                <div class="ckkj_zq"><b>[正确答案]:<span>{{item.correctAnswer}}</span></b></div>
+              </div>
+            </div>
+            <div class="div_title_cut_question"><b>四、简答题</b></div>
             <div class="div_question"> 
               <div class="div_table_radio_question" v-for="(item, index) of essayQS">
                 <div class="div_title_question_all">
@@ -92,13 +120,19 @@ export default {
       singleQS: [],
       multipleQS: [],
       essayQS: [],
+      judgeQS: [],
+      fillQS: [],
       score: '',
       sScore: '',
       submitTime: '',
       examExamineeId: '',
       subjectId: '',
       errQS: [],
+      errQSFill: [],
+      errQSJudge: [],
       selectTotalScroe: 0,
+      fillTotalScroe: 0,
+      judgeTotalScroe: 0,
       name: '',
       optionMap: [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
@@ -122,6 +156,10 @@ export default {
     async init() {
       this.selectTotalScroe = 0;
       this.errQS = [];
+      this.errQSFill = [];
+      this.fillTotalScroe = 0;
+      this.errQSJudge = [];
+      this.judgeTotalScroe = 0;
       const res = await this.$xhr('get', `${PLATFORM_POST_EXAMS_EXAMINEE_DETAILS}${this.$route.params.id}`);
       if (res.data.code === 0) {
         const examineeAnswerMap = res.data.data.examineeAnswerMap;
@@ -131,6 +169,8 @@ export default {
         this.singleQS = examineeAnswerMap.single;
         this.multipleQS = examineeAnswerMap.multiple;
         this.essayQS = examineeAnswerMap.essay;
+        this.judgeQS = examineeAnswerMap.judge;
+        this.fillQS = examineeAnswerMap.fill;
         if (this.singleQS) {
           this.singleQS.forEach((o) => {
             o.options = JSON.parse(o.content);
@@ -148,6 +188,25 @@ export default {
               this.errQS.push(o.subjectSort);
             } else {
               this.selectTotalScroe = this.selectTotalScroe + o.score;
+            }
+          });
+        }
+        if (this.judgeQS) {
+          this.judgeQS.forEach((o) => {
+            o.options = JSON.parse(o.content);
+            if (o.examineeAnswer !== o.correctAnswer) {
+              this.judgeQS.push(o.subjectSort);
+            } else {
+              this.judgeTotalScroe = this.judgeTotalScroe + o.score;
+            }
+          });
+        }
+        if (this.fillQS) {
+          this.fillQS.forEach((o) => {
+            if (o.examineeAnswer !== o.correctAnswer) {
+              this.fillQS.push(o.subjectSort);
+            } else {
+              this.fillTotalScroe = this.fillTotalScroe + o.score;
             }
           });
         }

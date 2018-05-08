@@ -15,8 +15,8 @@
        <ul>
         <li class="text-center btn_search" @click="insertToHtml('single')"><a data-toggle="modal" data-target="#myModal">插入单选题</a></li>
         <li class="text-center btn_search" @click="insertToHtml('multiple')"><a data-toggle="modal" data-target="#myModal">插入多选题</a></li>
-        <li class="text-center btn_search"><a>插入判断题</a></li>
-        <li class="text-center btn_search"><a>插入填空题</a></li>
+        <li class="text-center btn_search" @click="insertToHtml('judge')"><a data-toggle="modal" data-target="#myModal">插入判断题</a></li>
+        <li class="text-center btn_search" @click="insertToHtml('fill')"><a data-toggle="modal" data-target="#myModal">插入填空题</a></li>
         <li class="text-center btn_search" @click="insertToHtml('essay')"><a data-toggle="modal" data-target="#myModal">插入简答题</a></li>
        </ul>
        <div style="clear:both;"></div>
@@ -81,8 +81,59 @@
                 </div>
               </div>
             </div>
+            <div class="div_title_cut_question">
+              <b>三、判断题</b>
+            </div>
+            <div class="div_question" v-for="(q, index) of judgeQS">
+              <div class="div_table_radio_question">
+                <div class="div_title_question_all">
+                  <div class="div_title_question">
+                   <span class="number">{{index+1}}、</span>{{q.title}}
+                   <span class="req">&nbsp;*（分值：{{q.score}}分）</span>
+                  </div>
+                </div>
+                <ul class="ulradiocheck" v-for="(o, oi) of q.options">
+                  <li>
+                    <label class="radio-inline">
+                      <input type="radio" :value="oi" :name="'ju' + index" v-model="q.answer" disabled/>
+                      <b :class="{req: oi === q.answer - 0}">{{optionMap[oi]}}、{{o.option}}<span v-if="oi === q.answer - 0">（正确答案）</span></b>
+                    </label>
+                  </li>
+                </ul>
+                <div class="cjks_txxg clearfix"> 
+                  <ul class="pull-right txxg_xx"> 
+                    <li class="text-center" @click="editToHtml(index, 'judge')"><a data-toggle="modal" data-target="#myModal"><img :src="bj" />编辑</a></li> 
+                    <li class="text-center" @click="copy(index, 'judge')"><img :src="cz" />复制</li> 
+                    <li class="text-center" @click="del(index, 'judge')"><img :src="sc" />删除</li> 
+                  </ul> 
+                </div>
+              </div>
+           </div>
            <div class="div_title_cut_question">
-            <b>三、简答题</b>
+              <b>四、填空题</b>
+            </div>
+            <div class="div_question" v-for="(q, index) of fillQS">
+              <div class="div_table_radio_question">
+                <div class="div_title_question_all">
+                  <div class="div_title_question">
+                   <span class="number">{{index+1}}、</span>{{q.title}}
+                   <span class="req">&nbsp;*（分值：{{q.score}}分）</span>
+                  </div>
+                </div>
+                <div class="ulradiocheck">
+                  <b class="req">正确答案:</b><input style="border: 0px;" type="text" disabled="disabled" :value="q.answer"></input>
+                </div>
+                <div class="cjks_txxg clearfix"> 
+                  <ul class="pull-right txxg_xx"> 
+                    <li class="text-center" @click="editToHtml(index, 'fill')"><a data-toggle="modal" data-target="#myModal"><img :src="bj" />编辑</a></li> 
+                    <li class="text-center" @click="copy(index, 'fill')"><img :src="cz" />复制</li> 
+                    <li class="text-center" @click="del(index, 'fill')"><img :src="sc" />删除</li> 
+                  </ul> 
+                </div>
+              </div>
+           </div>
+           <div class="div_title_cut_question">
+            <b>五、简答题</b>
            </div>
            <div class="div_question" v-for="(q, index) of essayQS">
             <div class="div_table_radio_question">
@@ -140,6 +191,11 @@
                     <!-- <a class="pull-right">插入图片或视频</a>  -->
                   </div> 
                   <textarea title="" class="inputtext" v-model="title" placeholder="请设置标题"></textarea> 
+                  <div class="bjst_tit clearfix" v-show="type === 'fill'"> 
+                    <h5 class="pull-left">答案</h5> 
+                    <!-- <a class="pull-right">插入图片或视频</a>  -->
+                  </div> 
+                  <input v-show="type === 'fill'" title="" class="inputtext" v-model="answer" placeholder="请设置答案"></input>
                 </div> 
               </div> 
             </div> 
@@ -151,20 +207,21 @@
                       <th>选项文字</th> 
                       <!-- <th>图片</th>  -->
                       <th>正确答案</th> 
-                      <th>操作</th> 
+                      <th v-show="type !== 'judge'">操作</th> 
                     </tr> 
                   </thead> 
                   <tbody> 
                     <tr v-for="(o, index) of options"> 
-                      <td><input type="text" v-model="o.option"/></td> 
+                      <td v-show="type !== 'judge'"><input type="text" v-model="o.option"/></td> 
+                      <td v-show="type === 'judge'"><input type="text" v-model="o.option" disabled="disabled" /></td> 
                       <!-- <td><img :src="tp" /></td>  -->
                       <td>
                         <label class="checkbox-inline">
-                          <input v-if="type === 'single'" :value="index" type="radio" name="radio1" v-model="answer" />
+                          <input v-if="type === 'single' || type === 'judge'" :value="index" type="radio" name="radio1" v-model="answer" />
                           <input v-if="type === 'multiple'" type="checkbox" v-model="o.answer" />
                         </label>
                       </td> 
-                      <td class="gc_list">
+                      <td class="gc_list" v-show="type !== 'judge'">
                         <span>
                           <img :src="tj" @click="addOption"/>
                         </span>
@@ -261,6 +318,21 @@ export default {
         //   ],
         // },
       ],
+      judgeQI: '',
+      judgeQS: [
+        // 例
+        // {
+        //   title: '',
+        //   answer: '',
+        //   options: [
+        //     {
+        //       option: '选项A',
+        //       score: '',
+        //       image: '',
+        //     },
+        //   ],
+        // },
+      ],
       multipleQI: '',
       multipleQS: [
         // 例
@@ -283,6 +355,16 @@ export default {
         //   title: '',
         //   score: '',
         //   image: '',
+        // },
+      ],
+      fillQI: '',
+      fillQS: [
+        // 例
+        // {
+        //   title: '',
+        //   score: '',
+        //   image: '',
+        //   answer: '',
         // },
       ],
       optionMap: [
@@ -356,6 +438,28 @@ export default {
         if (q.answer === '') {
           this.errMsg.push('请设置正确答案');
         }
+      } else if (type === 'judge') {
+        const q = this.judgeQS[this.judgeQI];
+        q.title = this.title;
+        q.score = this.score;
+        q.answer = this.answer;
+        if (!q.title) {
+          this.errMsg.push('请设置标题');
+        }
+        if (q.answer === '') {
+          this.errMsg.push('请设置正确答案');
+        }
+      } else if (type === 'fill') {
+        const q = this.fillQS[this.fillQI];
+        q.title = this.title;
+        q.score = this.score;
+        q.answer = this.answer;
+        if (!q.title) {
+          this.errMsg.push('请设置标题');
+        }
+        if (q.answer === '') {
+          this.errMsg.push('请设置正确答案');
+        }
       } else if (type === 'multiple') {
         const q = this.multipleQS[this.multipleQI];
         q.title = this.title;
@@ -425,6 +529,23 @@ export default {
         if (this.errMsg.length === 0) {
           this.multipleQS.push(question);
         }
+      } else if (type === 'judge') {
+        question.answer = this.answer;
+        question.options = this.options;
+        if (question.answer === '') {
+          this.errMsg.push('请设置正确答案');
+        }
+        if (this.errMsg.length === 0) {
+          this.judgeQS.push(question);
+        }
+      } else if (type === 'fill') {
+        question.answer = this.answer;
+        if (question.answer === '') {
+          this.errMsg.push('请设置正确答案');
+        }
+        if (this.errMsg.length === 0) {
+          this.fillQS.push(question);
+        }
       } else if (type === 'essay') {
         if (this.errMsg.length === 0) {
           this.essayQS.push(question);
@@ -445,13 +566,28 @@ export default {
     },
     insertToHtml(type) {
       this.options = [];
-      if (type !== 'essay') {
+      if (type === 'single' || type === 'multiple') {
         const o = {
           option: '',
           answer: '',
           image: '',
         };
         this.options.push(o);
+      }
+      if (type === 'judge') {
+        this.options.push({
+          option: '对',
+          answer: '',
+          image: '',
+        });
+        this.options.push({
+          option: '错',
+          answer: '',
+          image: '',
+        });
+      }
+      if (type === 'fill') {
+        this.answer = '';
       }
       this.title = '';
       this.type = type;
@@ -465,6 +601,11 @@ export default {
         q = this.singleQS[index];
         this.answer = q.answer;
         this.options = q.options;
+      } if (type === 'judge') {
+        this.judgeQI = index;
+        q = this.judgeQS[index];
+        this.answer = q.answer;
+        this.options = q.options;
       } else if (type === 'multiple') {
         this.multipleQI = index;
         q = this.multipleQS[index];
@@ -473,12 +614,18 @@ export default {
         this.essayQI = index;
         q = this.essayQS[index];
         this.options = [];
+      } else if (type === 'fill') {
+        this.fillQI = index;
+        q = this.fillQS[index];
+        this.options = [];
       }
       this.title = q.title;
       this.type = type;
       this.score = q.score;
       this.insOrEdi = 'edit';
-      this.cancelOp = JSON.parse(JSON.stringify(q.options)) || [];
+      if (q.options) {
+        this.cancelOp = JSON.parse(JSON.stringify(q.options)) || [];
+      }
     },
     closed(type) {
       if (!this.cancelOp) return;
@@ -486,6 +633,8 @@ export default {
         this.singleQS[this.singleQI].options = this.cancelOp;
       } else if (type === 'multiple') {
         this.multipleQS[this.multipleQI].options = this.cancelOp;
+      } else if (type === 'judge') {
+        this.judgeQS[this.judgeQI].options = this.cancelOp;
       }
       this.options = this.cancelOp;
     },
@@ -496,6 +645,12 @@ export default {
           delete o.id;
         }
         this.singleQS.push(o);
+      } else if (type === 'judge') {
+        const o = JSON.parse(JSON.stringify(this.judgeQS[index]));
+        if (o.id) {
+          delete o.id;
+        }
+        this.judgeQS.push(o);
       } else if (type === 'multiple') {
         const o = JSON.parse(JSON.stringify(this.multipleQS[index]));
         if (o.id) {
@@ -508,21 +663,33 @@ export default {
           delete o.id;
         }
         this.essayQS.push(o);
+      } else if (type === 'fill') {
+        const o = JSON.parse(JSON.stringify(this.fillQS[index]));
+        if (o.id) {
+          delete o.id;
+        }
+        this.fillQS.push(o);
       }
     },
     del(index, type) {
       if (type === 'single') {
         this.singleQS.splice(index, 1);
+      } else if (type === 'judge') {
+        this.judgeQS.splice(index, 1);
       } else if (type === 'multiple') {
         this.multipleQS.splice(index, 1);
       } else if (type === 'essay') {
         this.essayQS.splice(index, 1);
+      } else if (type === 'fill') {
+        this.fillQS.splice(index, 1);
       }
     },
     view() {
       window.sessionStorage.setItem('singleQS', JSON.stringify(this.singleQS));
       window.sessionStorage.setItem('multipleQS', JSON.stringify(this.multipleQS));
+      window.sessionStorage.setItem('judgeQS', JSON.stringify(this.judgeQS));
       window.sessionStorage.setItem('essayQS', JSON.stringify(this.essayQS));
+      window.sessionStorage.setItem('fillQS', JSON.stringify(this.fillQS));
       this.$router.push(`/exam/view/${this.$route.params.id}`);
     },
     async init() {
@@ -531,10 +698,20 @@ export default {
         this.singleQS = res.data.data.questionMap.single || [];
         this.multipleQS = res.data.data.questionMap.multiple || [];
         this.essayQS = res.data.data.questionMap.essay || [];
+        this.judgeQS = res.data.data.questionMap.judge || [];
+        this.fillQS = res.data.data.questionMap.fill || [];
         this.name = res.data.data.name;
         this.illustrate = res.data.data.illustrate;
         if (this.singleQS) {
           this.singleQS.forEach((o) => {
+            o.options = JSON.parse(o.content);
+            o.type = o.subjectType;
+            delete o.content;
+            delete o.subjectType;
+          });
+        }
+        if (this.judgeQS) {
+          this.judgeQS.forEach((o) => {
             o.options = JSON.parse(o.content);
             o.type = o.subjectType;
             delete o.content;
@@ -555,7 +732,13 @@ export default {
             delete o.subjectType;
           });
         }
-        if (window.sessionStorage.getItem('singleQS') !== 'undefined') {
+        if (this.fillQS) {
+          this.fillQS.forEach((o) => {
+            o.type = o.subjectType;
+            delete o.subjectType;
+          });
+        }
+        if (window.sessionStorage.getItem('singleQS') && window.sessionStorage.getItem('singleQS') !== 'undefined') {
           const singleQS = JSON.parse(window.sessionStorage.getItem('singleQS'));
           if (singleQS) {
             singleQS.forEach((o) => {
@@ -565,7 +748,17 @@ export default {
             });
           }
         }
-        if (window.sessionStorage.getItem('multipleQS') !== 'undefined') {
+        if (window.sessionStorage.getItem('judgeQS') && window.sessionStorage.getItem('judgeQS') !== 'undefined') {
+          const judgeQS = JSON.parse(window.sessionStorage.getItem('judgeQS'));
+          if (judgeQS) {
+            judgeQS.forEach((o) => {
+              if (!o.id) {
+                this.judgeQS.push(o);
+              }
+            });
+          }
+        }
+        if (window.sessionStorage.getItem('multipleQS') && window.sessionStorage.getItem('multipleQS') !== 'undefined') {
           const multipleQS = JSON.parse(window.sessionStorage.getItem('multipleQS'));
           if (multipleQS) {
             multipleQS.forEach((o) => {
@@ -575,7 +768,7 @@ export default {
             });
           }
         }
-        if (window.sessionStorage.getItem('essayQS') !== 'undefined') {
+        if (window.sessionStorage.getItem('essayQS') && window.sessionStorage.getItem('essayQS') !== 'undefined') {
           const essayQS = JSON.parse(window.sessionStorage.getItem('essayQS'));
           if (essayQS) {
             essayQS.forEach((o) => {
@@ -585,11 +778,27 @@ export default {
             });
           }
         }
+        if (window.sessionStorage.getItem('fillQS') && window.sessionStorage.getItem('fillQS') !== 'undefined') {
+          const fillQS = JSON.parse(window.sessionStorage.getItem('fillQS'));
+          if (fillQS) {
+            fillQS.forEach((o) => {
+              if (!o.id) {
+                this.fillQS.push(o);
+              }
+            });
+          }
+        }
       }
     },
     async submit() {
       const param = {};
-      param.questionList = JSON.stringify([...this.singleQS, ...this.multipleQS, ...this.essayQS]);
+      param.questionList = JSON.stringify([
+        ...this.singleQS,
+        ...this.multipleQS,
+        ...this.essayQS,
+        ...this.judgeQS,
+        ...this.fillQS,
+      ]);
       param.questionList = JSON.parse(param.questionList);
       param.questionList.forEach((d) => {
         if (d.options) {
@@ -601,6 +810,11 @@ export default {
       param.questionList = JSON.stringify(param.questionList);
       const res = await this.$xhr('post', `${PLATFORM_POST_EXAMS_ADDITIONORUPDATING}${this.$route.params.id}`, param);
       if (res.data.code === 0) {
+        window.sessionStorage.setItem('singleQS', '');
+        window.sessionStorage.setItem('multipleQS', '');
+        window.sessionStorage.setItem('judgeQS', '');
+        window.sessionStorage.setItem('essayQS', '');
+        window.sessionStorage.setItem('fillQS', '');
         this.$router.push('/exam/list');
       }
     },
@@ -1107,6 +1321,7 @@ table {
   width: 19%;
   float: left;
 }
+.cjst_btn ul li a{ display: block; }
 .cjst_btn ul li:nth-of-type(n+2) {
   margin-left: 1.25%;
 }

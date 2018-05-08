@@ -4,10 +4,14 @@
       <div class="pull-left">
         <h2 class="index_logo"><img :src="logo" />CPS申报机构公共业务管理后台</h2>
       </div>
-      <div class="pull-right">
-        <div class="dropdown index_user"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img :src="tx" /><span class="glyphicon glyphicon-chevron-down"></span></a>
+      <div class="pull-right" style="width: 100px;">
+        <div class="dropdown index_user"> 
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <img :src="avatar" style="max-width: 80%;"/>
+            <span class="glyphicon glyphicon-chevron-down"></span>
+          </a>
           <div class="dropdown-menu">
-            <div class="text-center"> <img :src="tx" />
+            <div class="text-center"> <img :src="avatar" />
               <h5><b>{{name}}</b></h5>
               <button class="btn" @click="logout">退出登录</button>
             </div>
@@ -19,17 +23,17 @@
 </template>
 
 <script>
-import tx from '@/assets/img/tx.png';
 import logo from '@/assets/img/small_logo.png';
 import { delCookie } from '@/config/cookie';
+import { IMAGE_SERVER_URL } from '@/config/env';
 
 export default {
   name: 'lheader',
   data() {
     return {
-      tx,
       logo,
       name: window.sessionStorage.getItem('username'),
+      avatar: `${IMAGE_SERVER_URL}${window.sessionStorage.getItem('avatar')}`,
     };
   },
   methods: {

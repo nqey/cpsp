@@ -107,7 +107,7 @@
               </div>
               <div class="form-group clearfix">
                 <div class="content_left"><b>提交时间</b></div>
-                <div class="content_right clearfix">
+                <div class="content_right clearf  ix">
                   <p>{{registTime}}</p>
                 </div>
               </div>
@@ -164,7 +164,7 @@ export default {
       isShowSubmit: true,
       isShowStatus: true,
       address: '',
-      baseTime: 0,
+      baseTime: '',
       cellphone: '',
       createTime: 0,
       idBackUrl: '',
@@ -178,7 +178,7 @@ export default {
       name: '',
       organizAddress: '',
       organizName: '',
-      registTime: 0,
+      registTime: '',
       state: '',
       chargerImageUrl: '',
       chargerSurveyImageUrl: '',
@@ -244,7 +244,9 @@ export default {
         if (res.data.data.otherImageUrl) {
           this.otherImageUrl = res.data.data.otherImageUrl.split(',');
         }
-        this.registTime = formatDate(new Date(res.data.data.registTime), 'yyyy-MM-dd hh:mm:ss');
+        if (res.data.data.registTime) {
+          this.registTime = formatDate(new Date(res.data.data.registTime), 'yyyy-MM-dd hh:mm:ss');
+        }
         this.state = res.data.data.state;
         this.reason = res.data.data.reason;
         this.statusNm = this.status[this.state][0];
