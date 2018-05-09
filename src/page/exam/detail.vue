@@ -204,7 +204,7 @@ export default {
         if (this.fillQS) {
           this.fillQS.forEach((o) => {
             if (o.examineeAnswer !== o.correctAnswer) {
-              this.fillQS.push(o.subjectSort);
+              this.errQSFill.push(o.subjectSort);
             } else {
               this.fillTotalScroe = this.fillTotalScroe + o.score;
             }
