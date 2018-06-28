@@ -72,7 +72,7 @@
                 <td>{{item.score === -1 ? '未考试' : item.score}}</td>
                 <td class="gc_list">
                   <router-link :to="'/officermgt/detail/' + item.id">查看详情</router-link>
-                  <a v-if="item.state === '删除中'" @click="deleteOfficer(item.id)">删除</a>
+                  <a v-if="status[item.state] === '删除中'" @click="deleteOfficer(item.id)">删除</a>
                 </td>
               </tr>
             </tbody>
